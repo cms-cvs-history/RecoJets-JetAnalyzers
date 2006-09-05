@@ -115,7 +115,7 @@
   //titles
   etaMC5gen->SetTitle("Leading Jets from 700 GeV Zprime");
   etaMC5gen->SetTitleSize(0.045,"X");
-  etaMC5gen->SetXTitle("Jet #eta (GeV)");
+  etaMC5gen->SetXTitle("Jet #eta ");
 
   //gen
   etaMC5gen->SetLineColor(2);
@@ -165,7 +165,7 @@
   //titles
   phiMC5gen->SetTitle("Leading Jets from 700 GeV Zprime");
   phiMC5gen->SetTitleSize(0.045,"X");
-  phiMC5gen->SetXTitle("Jet #phi (GeV)");
+  phiMC5gen->SetXTitle("Jet #phi ");
 
   //gen
   phiMC5gen->SetMinimum(0.0);
@@ -208,5 +208,147 @@
   mycphi->Print("phi.eps");
   mycphi->Print("phi.gif");
 //------------------------------------------------------------
- 
+
+//emEnergFraction
+  TCanvas *mycEMfrac = new TCanvas("mycEMfrac","Jet EM Frac Validation 1");
+  mycEMfrac->cd();
+
+  //titles
+  emEnergyFraction->SetTitle("Leading Jets from 700 GeV Zprime");
+  emEnergyFraction->SetTitleSize(0.045,"X");
+  emEnergyFraction->SetXTitle("Jet EM Energy Fraction ");
+
+  //hist
+  emEnergyFraction->SetLineWidth(2);
+  emEnergyFraction->Draw();
+
+  mycEMfrac->Print("emEnergyFraction.eps");
+  mycEMfrac->Print("emEnergyFraction.gif");
+//------------------------------------------------------------
+
+//EM energy
+  TCanvas *mycEM = new TCanvas("mycEM","Jet EM Validation 1");
+  mycEM->Divide(2,2);
+  mycEM->cd(1);
+  emEnergyFraction->SetTitleSize(0.045,"X");
+  emEnergyFraction->SetXTitle("Jet EM Energy Fraction ");
+  emEnergyFraction->Draw();
+  mycEM->cd(2);
+  gPad->SetLogy(1);
+  emEnergyInEB->SetTitleSize(0.045,"X");
+  emEnergyInEB->SetXTitle("Jet EM Energy GeV) ");
+  emEnergyInEB->Draw();
+  leg1 = new TLegend(0.60,0.6,0.85,0.85);
+  leg1->SetFillColor(0);
+  leg1->SetHeader("EB");
+  leg1->Draw();
+  mycEM->cd(3);
+  gPad->SetLogy(1);
+  emEnergyInEE->SetTitleSize(0.045,"X");
+  emEnergyInEE->SetXTitle("Jet EM Energy (GeV) ");
+  emEnergyInEE->Draw();
+  leg2 = new TLegend(0.60,0.6,0.85,0.85);
+  leg2->SetFillColor(0);
+  leg2->SetHeader("EE");
+  leg2->Draw();
+  mycEM->cd(4);
+  gPad->SetLogy(1);
+  emEnergyInHF->SetTitleSize(0.045,"X");
+  emEnergyInHF->SetXTitle("Jet EM Energy (GeV) ");
+  emEnergyInHF->Draw();
+  leg3 = new TLegend(0.60,0.6,0.85,0.85);
+  leg3->SetFillColor(0);
+  leg3->SetHeader("HF");
+  leg3->Draw();
+  mycEM->Print("EM.eps");
+  mycEM->Print("EM.gif");
+
+//------------------------------------------------------------
+
+//HAD energy
+  TCanvas *mycEM = new TCanvas("mycHAD","Jet HAD Validation 1");
+  mycHAD->Divide(2,2);
+  mycHAD->cd(1);
+  gPad->SetLogy(1);
+  hadEnergyInHB->SetTitleSize(0.045,"X");
+  hadEnergyInHB->SetXTitle("Jet HAD Energy (GeV) ");
+  hadEnergyInHB->Draw();
+  leg1 = new TLegend(0.60,0.6,0.85,0.85);
+  leg1->SetFillColor(0);
+  leg1->SetHeader("HB");
+  leg1->Draw();
+  mycHAD->cd(2);
+  gPad->SetLogy(1);
+  hadEnergyInHO->SetTitleSize(0.045,"X");
+  hadEnergyInHO->SetXTitle("Jet HAD Energy (GeV) ");
+  hadEnergyInHO->Draw();
+  leg2 = new TLegend(0.60,0.6,0.85,0.85);
+  leg2->SetFillColor(0);
+  leg2->SetHeader("HO");
+  leg2->Draw();
+  mycHAD->cd(3);
+  gPad->SetLogy(1);
+  hadEnergyInHE->SetTitleSize(0.045,"X");
+  hadEnergyInHE->SetXTitle("Jet HAD Energy (GeV) ");
+  hadEnergyInHE->Draw();
+  leg3 = new TLegend(0.60,0.6,0.85,0.85);
+  leg3->SetFillColor(0);
+  leg3->SetHeader("HE");
+  leg3->Draw();
+  mycHAD->cd(4);
+  gPad->SetLogy(1);
+  hadEnergyInHF->SetTitleSize(0.045,"X");
+  hadEnergyInHF->SetXTitle("Jet HAD Energy (GeV) ");
+  hadEnergyInHF->Draw();
+  leg4 = new TLegend(0.60,0.6,0.85,0.85);
+  leg4->SetFillColor(0);
+  leg4->SetHeader("HF");
+  leg4->Draw();
+  mycHAD->Print("HAD.eps");
+  mycHAD->Print("HAD.gif");
+
+
+
+//pt
+  TCanvas *mycresp = new TCanvas("mycresp","Jet Response Validation 1");
+  mycresp->cd();
+
+  //titles
+  corRespVsPt->SetTitle("Response of Leading Jets for |#eta|<1");
+  corRespVsPt->SetTitleSize(0.045,"X");
+  corRespVsPt->SetTitleSize(0.04,"Y");
+  corRespVsPt->SetTitleOffset(1.05,"Y");
+  corRespVsPt->SetXTitle("Gen Jet p_{T} (GeV)");
+  corRespVsPt->SetYTitle("(Calo Jet p_{T}) / (Gen Jet p_{T})");
+  corRespVsPt->GetXaxis()->SetRangeUser(30.0,350.0);
+  corRespVsPt->SetMinimum(0.0);
+
+  //cor
+  corRespVsPt->SetMarkerColor(4);
+  corRespVsPt->SetLineColor(4);
+  corRespVsPt->SetMarkerStyle(20);
+  corRespVsPt->Draw("pe");
+  l = new TLine(30.0, 1.0, 350.0, 1.0); 
+  l->SetLineColor(4);
+  l->SetLineWidth(2);
+  l->Draw();
+
+  //cal
+  respVsPt->SetMarkerColor(1);
+  respVsPt->SetLineColor(1);
+  respVsPt->SetMarkerStyle(25);
+  respVsPt->Draw("peSAME");
+
+  //legend
+  leg1 = new TLegend(0.5,0.2,0.85,0.45);
+  leg1->SetFillColor(0);
+  leg1->SetHeader("CaloJets (MC5)");
+  leg1->AddEntry(corRespVsPt,"Corrected","pe");
+  leg1->AddEntry(respVsPt,"Plain","pe");
+  leg1->Draw();
+  mycresp->Print("respVsPt.eps");
+  mycresp->Print("respVsPt.gif");
+//------------------------------------------------------------
+
+
 }
