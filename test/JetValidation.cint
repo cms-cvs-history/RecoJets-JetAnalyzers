@@ -350,5 +350,45 @@
   mycresp->Print("respVsPt.gif");
 //------------------------------------------------------------
 
-
+//pt
+  TCanvas *mycfrac = new TCanvas("mycfrac","Jet Calorimeter Energ Fraction");
+  mycfrac->cd();
+  HFfractionVsEta->SetTitle("Energy Fraction of Leading Jets vs |#eta|");
+  HFfractionVsEta->SetTitleSize(0.045,"X");
+  HFfractionVsEta->SetTitleSize(0.04,"Y");
+  HFfractionVsEta->SetTitleOffset(1.05,"Y");
+  HFfractionVsEta->SetYTitle("Fraction of Jet Energy");
+  HFfractionVsEta->SetXTitle("Jet |#eta|");
+  EBfractionVsEta->SetMarkerStyle(20);
+  EEfractionVsEta->SetMarkerStyle(21);
+  EBfractionVsEta->SetMarkerColor(2);
+  EEfractionVsEta->SetMarkerColor(2);
+  HBfractionVsEta->SetMarkerStyle(20);
+  HEfractionVsEta->SetMarkerStyle(21);
+  HFfractionVsEta->SetMarkerStyle(22);
+  HOfractionVsEta->SetMarkerStyle(29);
+  HBfractionVsEta->SetMarkerColor(4);
+  HEfractionVsEta->SetMarkerColor(4);
+  HFfractionVsEta->SetMarkerColor(4);
+  HOfractionVsEta->SetMarkerColor(4);
+  HFfractionVsEta->Draw();
+  EBfractionVsEta->Draw("SAME");
+  EEfractionVsEta->Draw("SAME");
+  HBfractionVsEta->Draw("SAME");
+  HEfractionVsEta->Draw("SAME");
+  HOfractionVsEta->Draw("SAME");  
+  //legend
+  leg1 = new TLegend(0.65,0.2,0.85,0.7);
+  leg1->SetFillColor(0);
+  leg1->SetHeader("Calorimeter");
+  leg1->AddEntry(EBfractionVsEta,"EB","pe");
+  leg1->AddEntry(HBfractionVsEta,"HB","pe");
+  leg1->AddEntry(HOfractionVsEta,"HO","pe");
+  leg1->AddEntry(EBfractionVsEta,"EE","pe");
+  leg1->AddEntry(HEfractionVsEta,"HE","pe");
+  leg1->AddEntry(HFfractionVsEta,"HF","pe");
+  leg1->Draw();
+  mycfrac->Print("CaloEnergyFraction.eps");
+  mycfrac->Print("CaloEnergyFraction.gif");
+  
 }
