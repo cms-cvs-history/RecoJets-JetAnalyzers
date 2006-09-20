@@ -12,7 +12,7 @@
   mycpt->cd();
 
   //titles
-  ptMC5gen->SetTitle("Leading Jets from 700 GeV Zprime");
+  ptMC5gen->SetTitle("Leading Jets from 380 GeV and up QCD");
   ptMC5gen->SetTitleSize(0.045,"X");
   ptMC5gen->SetXTitle("Jet p_{T} (GeV)");
 
@@ -62,7 +62,7 @@
   mycm2j->cd();
 
   //titles
-  m2jMC5gen->SetTitle("Leading Jets from 700 GeV Zprime");
+  m2jMC5gen->SetTitle("Leading Jets from 380 GeV and up QCD");
   m2jMC5gen->SetTitleSize(0.045,"X");
   m2jMC5gen->SetXTitle("Dijet Mass (GeV)");
 
@@ -113,7 +113,7 @@
   myceta->cd();
 
   //titles
-  etaMC5gen->SetTitle("Leading Jets from 700 GeV Zprime");
+  etaMC5gen->SetTitle("Leading Jets from 380 GeV and up QCD");
   etaMC5gen->SetTitleSize(0.045,"X");
   etaMC5gen->SetXTitle("Jet #eta ");
 
@@ -163,7 +163,7 @@
   mycphi->cd();
 
   //titles
-  phiMC5gen->SetTitle("Leading Jets from 700 GeV Zprime");
+  phiMC5gen->SetTitle("Leading Jets from 380 GeV and up QCD");
   phiMC5gen->SetTitleSize(0.045,"X");
   phiMC5gen->SetXTitle("Jet #phi ");
 
@@ -214,7 +214,7 @@
   mycEMfrac->cd();
 
   //titles
-  emEnergyFraction->SetTitle("Leading Jets from 700 GeV Zprime");
+  emEnergyFraction->SetTitle("Leading Jets from 380 GeV and up QCD");
   emEnergyFraction->SetTitleSize(0.045,"X");
   emEnergyFraction->SetXTitle("Jet EM Energy Fraction ");
 
@@ -309,7 +309,7 @@
 
 
 
-// Jet Response, raw and corrected
+//pt
   TCanvas *mycresp = new TCanvas("mycresp","Jet Response Validation 1");
   mycresp->cd();
 
@@ -320,7 +320,7 @@
   corRespVsPt->SetTitleOffset(1.05,"Y");
   corRespVsPt->SetXTitle("Gen Jet p_{T} (GeV)");
   corRespVsPt->SetYTitle("(Calo Jet p_{T}) / (Gen Jet p_{T})");
-  corRespVsPt->GetXaxis()->SetRangeUser(30.0,350.0);
+  corRespVsPt->GetXaxis()->SetRangeUser(0.0,2500.0);
   corRespVsPt->SetMinimum(0.0);
 
   //cor
@@ -328,7 +328,7 @@
   corRespVsPt->SetLineColor(4);
   corRespVsPt->SetMarkerStyle(20);
   corRespVsPt->Draw("pe");
-  l = new TLine(30.0, 1.0, 350.0, 1.0); 
+  l = new TLine(0.0, 1.0, 2500.0, 1.0); 
   l->SetLineColor(4);
   l->SetLineWidth(2);
   l->Draw();
@@ -349,6 +349,7 @@
   mycresp->Print("respVsPt.eps");
   mycresp->Print("respVsPt.gif");
 //------------------------------------------------------------
+
 
 //Calorimeter Energy Fraction for Leading Jets
   TCanvas *mycfrac = new TCanvas("mycfrac","Leading Jet Calorimeter Energy Fraction");
@@ -431,6 +432,9 @@
   leg1->AddEntry(WindowHEfractionVsEta,"HE","pe");
   leg1->AddEntry(WindowHFfractionVsEta,"HF","pe");
   leg1->Draw();
+  TText *t = new TText(); 
+  t -> SetTextSize(0.04);
+  t -> DrawText(0.2,0.85,"Mean Gen Jet Energy = 2000 GeV");
   mycfrac2->Print("WindowCaloEnergyFraction.eps");
   mycfrac2->Print("WindowCaloEnergyFraction.gif");
 //------------------------------------------------------------
@@ -458,7 +462,7 @@
   WindowEmEnergyVsEta->Draw("SAME");
   WindowHadEnergyVsEta->Draw("SAME");
   //legend
-  leg1 = new TLegend(0.65,0.5,0.85,0.75);
+  leg1 = new TLegend(0.65,0.6,0.85,0.85);
   leg1->SetFillColor(0);
   //leg1->SetHeader("Energy Type");
   leg1->AddEntry(WindowGenEnergyVsEta,"GenJets E","pe");
@@ -493,7 +497,7 @@
   emEnergyVsEta->Draw("SAME");
   hadEnergyVsEta->Draw("SAME");
   //legend
-  leg1 = new TLegend(0.15,0.5,0.35,0.75);
+  leg1 = new TLegend(0.15,0.6,0.35,0.85);
   leg1->SetFillColor(0);
   //leg1->SetHeader("Energy Type");
   leg1->AddEntry(GenEnergyVsEta,"GenJets E","pe");
@@ -565,6 +569,10 @@
   leg1->AddEntry(WindowEmErespVsEta,"EM","pe");
   leg1->AddEntry(WindowHadErespVsEta,"HAD","pe");
   leg1->Draw();
+  TText *t = new TText(); 
+  t -> SetTextSize(0.04);
+  t -> DrawText(0.2,0.9,"Mean Gen Jet Energy = 2000 GeV");
   mycwinErespVsEta->Print("WindowErespVsEta.eps");
   mycwinErespVsEta->Print("WindowErespVsEta.gif");
+
 }

@@ -431,6 +431,9 @@
   leg1->AddEntry(WindowHEfractionVsEta,"HE","pe");
   leg1->AddEntry(WindowHFfractionVsEta,"HF","pe");
   leg1->Draw();
+  TText *t = new TText(); 
+  t -> SetTextSize(0.04);
+  t -> DrawText(0.2,0.85,"Mean Gen Jet Energy = 280 GeV");
   mycfrac2->Print("WindowCaloEnergyFraction.eps");
   mycfrac2->Print("WindowCaloEnergyFraction.gif");
 //------------------------------------------------------------
@@ -565,6 +568,9 @@
   leg1->AddEntry(WindowEmErespVsEta,"EM","pe");
   leg1->AddEntry(WindowHadErespVsEta,"HAD","pe");
   leg1->Draw();
+  TText *t = new TText(); 
+  t -> SetTextSize(0.04);
+  t -> DrawText(0.2,0.9,"Mean Gen Jet Energy = 280 GeV");
   mycwinErespVsEta->Print("WindowErespVsEta.eps");
   mycwinErespVsEta->Print("WindowErespVsEta.gif");
 }
