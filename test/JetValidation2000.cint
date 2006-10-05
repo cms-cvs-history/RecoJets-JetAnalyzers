@@ -573,5 +573,40 @@
   t -> DrawText(0.2,0.9,"Mean Gen Jet Energy = 800 GeV");
   mycwinErespVsEta->Print("WindowErespVsEta.eps");
   mycwinErespVsEta->Print("WindowErespVsEta.gif");
+//------------------------------------------------------------
+
+//Max Tower EM and HAD Energy Response vs. Eta in E Window
+  TCanvas *mycmaxTowResp = new TCanvas("mycmaxTowResp","Tow Response vs Jet Eta in E Window");
+  mycmaxTowResp->cd();
+  WindowMaxTowErespVsEta->SetTitle("Max Tower Energy Response vs jet |#eta| in GenJet Energy Window");
+  WindowMaxTowErespVsEta->SetTitleSize(0.045,"X");
+  WindowMaxTowErespVsEta->SetTitleSize(0.04,"Y");
+  WindowMaxTowErespVsEta->SetTitleOffset(1.1,"Y");
+  WindowMaxTowErespVsEta->SetYTitle("Max Tower E Response (CaloTower E/GenJet E)");
+  WindowMaxTowErespVsEta->SetXTitle("Jet |#eta|");
+  WindowMaxTowErespVsEta->SetMinimum(0.0);
+  WindowMaxTowErespVsEta->SetMaximum(1.0);
+  WindowMaxTowErespVsEta->SetMarkerStyle(20);
+  WindowMaxTowErespVsEta->SetMarkerColor(1);
+  WindowMaxEmErespVsEta->SetMarkerStyle(20);
+  WindowMaxEmErespVsEta->SetMarkerColor(2);
+  WindowMaxHadErespVsEta->SetMarkerStyle(20);
+  WindowMaxHadErespVsEta->SetMarkerColor(4);
+  WindowMaxTowErespVsEta->Draw();
+  WindowMaxEmErespVsEta->Draw("SAME");
+  WindowMaxHadErespVsEta->Draw("SAME");
+  //legend
+  leg1 = new TLegend(0.7,0.7,0.85,0.85);
+  leg1->SetFillColor(0);
+  //leg1->SetHeader("Eresp Type");
+  leg1->AddEntry(WindowMaxTowErespVsEta,"EM + HAD ","pe");
+  leg1->AddEntry(WindowMaxEmErespVsEta,"EM","pe");
+  leg1->AddEntry(WindowMaxHadErespVsEta,"HAD","pe");
+  leg1->Draw();
+  TText *t = new TText(); 
+  t -> SetTextSize(0.04);
+  t -> DrawText(0.2,0.9,"Mean Gen Jet Energy = 800 GeV");
+  mycmaxTowResp->Print("WindowMaxTowErespVsEta.eps");
+  mycmaxTowResp->Print("WindowMaxTowErespVsEta.gif");
 
 }
