@@ -17,7 +17,6 @@
 #include "RecoJets/JetAnalyzers/interface/JetAnalysis.h"
 #include "RecoJets/JetAnalyzers/interface/JetUtil.h"
 #include "RecoJets/JetAnalyzers/interface/CaloTowerBoundries.h"
-#include "DataFormats/HepMCCandidate/interface/GenParticleCandidate.h"
 
 #include <sstream>
 #include <stdlib.h>
@@ -729,27 +728,24 @@ void JetAnalysis::fillMCParticlesInsideJet(const HepMC::GenEvent genEvent,const 
 
   	    HepLorentzVector P4Jet(0,0,0,0);
 
-	    std::vector <const GenParticleCandidate*> parts = ijet->getConstituents ();
+	    const std::vector<int>& barcodes = ijet->getBarcodes();
 	   
-	    int nConstituents= parts.size();
+	    int nConstituents= barcodes.size();
 	    for (int i = 0; i <nConstituents ; i++){
 
-	      const GenParticleCandidate* part = parts [i];
-	      if (!part) {
-		std::cerr << "JetAnalysis::fillMCParticlesInsideJet-> Missing MC objects" << std::endl;
-		continue;
-	      }
+	      HepMC::GenParticle* part = genEvent.barcode_to_particle (barcodes [i]);
 
 	      NumParticle++;
 
 
 
-	      HepLorentzVector p(part->px(),part->py(),part->pz(),part->energy());
+	      CLHEP::HepLorentzVector momentum = part->Momentum();
+	      HepLorentzVector p(momentum.px(),momentum.py(),momentum.pz(),momentum.e());
 	      P4Jet +=p;
                               
-	      Double_t Eta = part->eta();
-	      Double_t Phi = part->phi();
-	      Double_t Pt  = part->pt();
+	      Double_t Eta = momentum.eta();
+	      Double_t Phi = momentum.phi();
+	      Double_t Pt  = momentum.perp();
 	      fillHist("PtOfParticleinJet"+pi.str(),Pt);          
 
 	      float rr=radius(GenJetEta,GenJetPhi,Eta,Phi);
