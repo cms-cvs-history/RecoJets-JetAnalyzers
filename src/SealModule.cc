@@ -9,7 +9,8 @@
 #include "RecoJets/JetAnalyzers/interface/SimpleJetDump.h"
 #include "RecoJets/JetAnalyzers/interface/CorJetsExample.h"
 #include "RecoJets/JetAnalyzers/interface/DijetRatio.h"
- 
+#include "FlavorJetCorrectionExample.h"
+
 DEFINE_SEAL_MODULE();
 DEFINE_ANOTHER_FWK_MODULE( JetPlotsExample );
 DEFINE_ANOTHER_FWK_MODULE( JetAnalyzer );
@@ -20,3 +21,4 @@ DEFINE_ANOTHER_FWK_MODULE( DijetMass );
 DEFINE_ANOTHER_FWK_MODULE( SimpleJetDump );
 DEFINE_ANOTHER_FWK_MODULE( CorJetsExample );
 DEFINE_ANOTHER_FWK_MODULE( DijetRatio );
+DEFINE_ANOTHER_FWK_MODULE( FlavorJetCorrectionExample );
