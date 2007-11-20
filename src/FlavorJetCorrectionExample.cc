@@ -3,25 +3,7 @@
     F.Ratnikov (UMd)  Nov 16, 2007
 */
 
-#include <string>
-
-#include "FWCore/Framework/interface/EDAnalyzer.h"
-#include "FWCore/ParameterSet/interface/InputTag.h"
-
-class FlavorJetCorrectionExample : public edm::EDAnalyzer {
- public:
-  explicit FlavorJetCorrectionExample (const edm::ParameterSet& fParameters);
-  virtual ~FlavorJetCorrectionExample () {}
-  virtual void analyze(const edm::Event&, const edm::EventSetup&);
- private:
-  edm::InputTag mInput;
-  std::string mUDSCorrectorName;
-  std::string mCCorrectorName;
-  std::string mBCorrectorName;
-};
-
-
-
+#include "FlavorJetCorrectionExample.h"
 
 #include "FWCore/Framework/interface/Event.h"
 #include "DataFormats/Common/interface/Handle.h"
@@ -55,7 +37,7 @@ void FlavorJetCorrectionExample::analyze(const edm::Event& fEvent, const edm::Ev
     const CaloJet& jet = (*jets)[ijet];
     std::cout << "FlavorJetCorrectionExample::analize-> jet #" << ijet;
     if (ijet%3 == 0) { // assume it is light quark
-      std::cout << ": use USD quark corrections" << std::endl;
+      std::cout << ": use UDS quark corrections" << std::endl;
       corrector = udsJetCorrector;
     }
     else if (ijet%3 == 1) { // assume it is c quark
