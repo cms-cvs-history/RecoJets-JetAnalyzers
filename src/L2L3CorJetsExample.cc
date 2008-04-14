@@ -72,8 +72,8 @@ void L2L3CorJetsExample::analyze(const Event& evt, const EventSetup& es)
   h_ptCor.Fill(highestPt);   
   h_ptCor.Fill(nextPt);
   /////////////////////// Correction on the fly //////////////////////////
-  const JetCorrector* corrector_L2 = JetCorrector::getJetCorrector ("L2RelativeJetCorrectorIcone5",es);
-  const JetCorrector* corrector_L3 = JetCorrector::getJetCorrector ("L3AbsoluteJetCorrectorIcone5",es);  
+  const JetCorrector* corrector_L2 = JetCorrector::getJetCorrector (L2JetCorrectionService,es);
+  const JetCorrector* corrector_L3 = JetCorrector::getJetCorrector (L3JetCorrectionService,es);  
   highestPt=0.0;
   nextPt=0.0;
   for(CaloJetCollection::const_iterator cal = caloJets->begin(); cal != caloJets->end(); ++ cal) 
@@ -88,7 +88,7 @@ void L2L3CorJetsExample::analyze(const Event& evt, const EventSetup& es)
        }
      else if (corPt>nextPt)
        nextPt = corPt;
-   }
+   } 
   h_ptCorOnFly.Fill(highestPt);   
   h_ptCorOnFly.Fill(nextPt); 
 }
