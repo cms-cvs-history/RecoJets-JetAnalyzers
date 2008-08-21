@@ -1,6 +1,6 @@
 #include "RecoJets/JetAnalyzers/interface/L2L3CorJetsExample.h"
 #include "DataFormats/JetReco/interface/CaloJetCollection.h"
-#include "DataFormats/JetReco/interface/GenJetCollection.h"
+#include "DataFormats/JetReco/interface/GenJetfwd.h"
 #include "DataFormats/JetReco/interface/CaloJet.h"
 #include "DataFormats/JetReco/interface/GenJet.h"
 #include "FWCore/Framework/interface/Event.h"
