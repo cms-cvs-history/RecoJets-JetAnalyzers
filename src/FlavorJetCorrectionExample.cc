@@ -18,6 +18,7 @@ class FlavorJetCorrectionExample : public edm::EDAnalyzer {
   std::string mUDSCorrectorName;
   std::string mCCorrectorName;
   std::string mBCorrectorName;
+  std::string mGCorrectorName;
 };
 
 
@@ -37,7 +38,8 @@ FlavorJetCorrectionExample::FlavorJetCorrectionExample (const edm::ParameterSet&
   : mInput (fConfig.getParameter <edm::InputTag> ("src")),
     mUDSCorrectorName (fConfig.getParameter <std::string> ("UDSQuarksCorrector")),
     mCCorrectorName (fConfig.getParameter <std::string> ("CQuarkCorrector")),
-    mBCorrectorName (fConfig.getParameter <std::string> ("BQuarkCorrector"))
+    mBCorrectorName (fConfig.getParameter <std::string> ("BQuarkCorrector")),
+    mGCorrectorName (fConfig.getParameter <std::string> ("GluonCorrector"))
 {}
 
 void FlavorJetCorrectionExample::analyze(const edm::Event& fEvent, const edm::EventSetup& fSetup) {
@@ -45,6 +47,7 @@ void FlavorJetCorrectionExample::analyze(const edm::Event& fEvent, const edm::Ev
   const JetCorrector* udsJetCorrector = JetCorrector::getJetCorrector (mUDSCorrectorName, fSetup);
   const JetCorrector* cQuarkJetCorrector = JetCorrector::getJetCorrector (mCCorrectorName, fSetup);
   const JetCorrector* bQuarkJetCorrector = JetCorrector::getJetCorrector (mBCorrectorName, fSetup);
+  const JetCorrector* gluonJetCorrector  = JetCorrector::getJetCorrector (mGCorrectorName, fSetup);
   const JetCorrector* corrector = 0;
   
   // get input jets (supposed to be MC corrected already)
@@ -54,17 +57,21 @@ void FlavorJetCorrectionExample::analyze(const edm::Event& fEvent, const edm::Ev
   for (unsigned ijet = 0; ijet < jets->size(); ++ijet) {
     const CaloJet& jet = (*jets)[ijet];
     std::cout << "FlavorJetCorrectionExample::analize-> jet #" << ijet;
-    if (ijet%3 == 0) { // assume it is light quark
+    if (ijet%4 == 0) { // assume it is light quark
       std::cout << ": use USD quark corrections" << std::endl;
       corrector = udsJetCorrector;
     }
-    else if (ijet%3 == 1) { // assume it is c quark
+    else if (ijet%4 == 1) { // assume it is c quark
       std::cout << ": use c quark corrections" << std::endl;
       corrector = cQuarkJetCorrector;
     }
-    else { // assume it is b quark
+    else if (ijet%4 == 2) { // assume it is b quark
       std::cout << ": use b quark corrections" << std::endl;
       corrector = bQuarkJetCorrector;
+    }
+    else { // assume it is gluon jet
+      std::cout << ": use gluon corrections" << std::endl;
+      corrector = gluonJetCorrector;
     }
     // get selected correction for the jet
     double correction = corrector->correction (jet, fEvent, fSetup);
@@ -73,6 +80,7 @@ void FlavorJetCorrectionExample::analyze(const edm::Event& fEvent, const edm::Ev
 	      << " -> correction factor: " << correction 
 	      << ", corrected pt: " << jet.pt()*correction
 	      << std::endl;
+
   }
 }
 

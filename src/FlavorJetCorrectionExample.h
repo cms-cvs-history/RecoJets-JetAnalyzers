@@ -21,6 +21,7 @@ class FlavorJetCorrectionExample : public edm::EDAnalyzer {
   std::string mUDSCorrectorName;
   std::string mCCorrectorName;
   std::string mBCorrectorName;
+  std::string mGCorrectorName;
 };
 
 #endif
