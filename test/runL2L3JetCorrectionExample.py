@@ -20,20 +20,14 @@ process.source = cms.Source("PoolSource",
 process.load("JetMETCorrections.Configuration.L2L3Corrections_iCSA08_S156_cff")
 # set the record's IOV. Must be defined once. Choose ANY correction service. #
 process.prefer("L2L3JetCorrectorIcone5") 
-#############   Corrected Calo Jet collection ########
-process.calo = cms.EDAnalyzer("CaloJetPlotsExample",
-    JetAlgorithm  = cms.string('L2L3ChainJetCorJetIcone5'),
+#############   User analyzer ########################
+process.user = cms.EDAnalyzer("CaloJetPlotsExample",
+    JetAlgorithm  = cms.string('L2L3CorJetIcone5'),
     HistoFileName = cms.string('CaloJetCorExample.root'),
     NJets         = cms.int32(100)
 )
-#############   Corrected PF Jet collection ##########
-process.pf = cms.EDAnalyzer("PFJetPlotsExample",
-    JetAlgorithm  = cms.string('L2L3ChainJetCorJetPFIcone5'),
-    HistoFileName = cms.string('PFJetCorExample.root'),
-    NJets         = cms.int32(100)
-)
 #############   Path       ###########################
-process.p = cms.Path(process.L2L3ChainJetCorJetIcone5 * process.calo * process.L2L3ChainJetCorJetPFIcone5 * process.pf)
+process.p = cms.Path(process.L2L3CorJetIcone5 * process.user)
 #############   Format MessageLogger #################
 process.MessageLogger.cerr.FwkReport.reportEvery = 10
 

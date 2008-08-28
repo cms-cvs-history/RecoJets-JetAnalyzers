@@ -25,14 +25,8 @@ process.calo = cms.EDAnalyzer("CaloJetCorExample",
     HistoFileName        = cms.string('CaloJetCorOnTheFlyExample.root'),
     JetCorrectionService = cms.string('L2L3JetCorrectorIcone5')
 )
-#############   Correct PF Jets on the fly  ##########
-process.pf = cms.EDAnalyzer("PFJetCorExample",
-    JetAlgorithm         = cms.string('iterativeCone5PFJets'),
-    HistoFileName        = cms.string('PFJetCorOnTheFlyExample.root'),
-    JetCorrectionService = cms.string('L2L3JetCorrectorPFIcone5')
-)
 #############   Path       ###########################
-process.p = cms.Path(process.calo*process.pf)
+process.p = cms.Path(process.calo)
 #############   Format MessageLogger #################
 process.MessageLogger.cerr.FwkReport.reportEvery = 10
 
