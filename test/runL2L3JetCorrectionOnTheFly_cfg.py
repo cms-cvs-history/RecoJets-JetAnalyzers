@@ -12,18 +12,17 @@ process.maxEvents = cms.untracked.PSet(
 )
 #############   Define the source file ###############
 process.source = cms.Source("PoolSource",
-    fileNames = cms.untracked.vstring(
-'/store/relval/CMSSW_2_1_2/RelValQCD_Pt_80_120/GEN-SIM-DIGI-RAW-HLTDEBUG-RECO/IDEAL_V6_10TeV_v7/0000/044A7A03-BE6E-DD11-B3C0-000423D98B08.root')
+    fileNames = cms.untracked.vstring('/store/mc/Summer08/QCDDiJetPt80to120/GEN-SIM-RECO/IDEAL_V9_v1/0000/009AC3E3-BF97-DD11-93B5-00093D13BB43.root')
 )
 #############   Include the jet corrections ##########
-process.load("JetMETCorrections.Configuration.L2L3Corrections_iCSA08_S156_cff")
+process.load("JetMETCorrections.Configuration.L2L3Corrections_Summer08_cff")
 # set the record's IOV. Must be defined once. Choose ANY correction service. #
-process.prefer("L2L3JetCorrectorIcone5") 
+process.prefer("L2L3JetCorrectorIC5Calo") 
 #############   Correct Calo Jets on the fly #########
 process.calo = cms.EDAnalyzer("CaloJetCorExample",
     JetAlgorithm         = cms.string('iterativeCone5CaloJets'),
     HistoFileName        = cms.string('CaloJetCorOnTheFlyExample.root'),
-    JetCorrectionService = cms.string('L2L3JetCorrectorIcone5')
+    JetCorrectionService = cms.string('L2L3JetCorrectorIC5Calo')
 )
 #############   Path       ###########################
 process.p = cms.Path(process.calo)

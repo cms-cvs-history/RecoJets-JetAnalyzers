@@ -11,19 +11,17 @@ process.maxEvents = cms.untracked.PSet(
     input = cms.untracked.int32(100)
 )
 #############   Define the source file ###############
-#process.load("RecoJets.JetAnalyzers.RelValQCD_Pt_80_120_cfi")
 process.source = cms.Source("PoolSource",
-    fileNames = cms.untracked.vstring(
-'/store/relval/CMSSW_2_1_2/RelValQCD_Pt_80_120/GEN-SIM-DIGI-RAW-HLTDEBUG-RECO/IDEAL_V6_10TeV_v7/0000/044A7A03-BE6E-DD11-B3C0-000423D98B08.root')
+    fileNames = cms.untracked.vstring('/store/mc/Summer08/QCDDiJetPt80to120/GEN-SIM-RECO/IDEAL_V9_v1/0000/009AC3E3-BF97-DD11-93B5-00093D13BB43.root')
 )
 #############   Define the L2 correction service #####
-process.L2JetCorrector = cms.ESSource("L2RelativeCorrectionService", 
-    tagName = cms.string('iCSA08_S156_L2Relative_Icone5'),
+process.L2RelativeJetCorrector = cms.ESSource("L2RelativeCorrectionService", 
+    tagName = cms.string('Summer08_L2Relative_IC5Calo'),
     label = cms.string('L2RelativeJetCorrector')
 )
 #############   Define the L3 correction service #####
-process.L3JetCorrector = cms.ESSource("L3AbsoluteCorrectionService", 
-    tagName = cms.string('iCSA08_S156_L3Absolute_Icone5'),
+process.L3AbsoluteJetCorrector = cms.ESSource("L3AbsoluteCorrectionService", 
+    tagName = cms.string('Summer08_L3Absolute_IC5Calo'),
     label = cms.string('L3AbsoluteJetCorrector')
 )
 #############   Define the L7 correction service #####
