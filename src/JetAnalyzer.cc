@@ -1504,7 +1504,8 @@ void JetAnalyzer::fillMCParticlesInsideJet(const HepMC::GenEvent genEvent,const 
 	      Double_t Phi = jetconst[i]->phi();
 	      Double_t Pt  = jetconst[i]->pt();
 
-	      int pdgCode = jetconst[i]->pdgId();
+	      int pdgCode; 
+              pdgCode = jetconst[i]->pdgId();
 
 	      fillHist1D("PtOfParticleinJet"+pi.str(),Pt);          
 
@@ -2906,16 +2907,16 @@ void JetAnalyzer::GetParentPartons(std::vector<Candidate*>& ParentParton){
     if(Status==3) {
       //      cout << " np " << np << "Status " << (*p)->status() <<" Mother 1 " << (*p)->Mother() << "  Mother 2 " << (*p)->SecondMother() << "  Type " << (*p)->pdg_id() << " Pt " << (*p)->Momentum().perp() <<endl; 
 
-      if(p.numberOfMothers()==2){
-	const Candidate &m0 = *(p.mother(0));
-	const Candidate &m1 = *(p.mother(1));
+      //if(p.numberOfMothers()==2){
+	//const Candidate &m0 = *(p.mother(0));
+	//const Candidate &m1 = *(p.mother(1));
 
 			      
 			      //==5 && *(p.mother(1))==6){
 
 	//        ParentParton.push_back((*genParticles)[i]);
 	//if(ParentParton.size()==2) return;
-      }
+      //}
     }
     if(np>10) return;
   }
