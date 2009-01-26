@@ -12,10 +12,10 @@ process.maxEvents = cms.untracked.PSet(
 )
 #############   Define the source file ###############
 process.source = cms.Source("PoolSource",
-    fileNames = cms.untracked.vstring('/store/mc/Winter09/QCDDiJetPt380to470/GEN-SIM-DIGI-RECO/IDEAL_V11_FastSim_v1/0041/0894C59C-51D0-DD11-B828-003048322B3E.root')
+    fileNames = cms.untracked.vstring('/store/mc/Summer08/QCDDiJetPt80to120/GEN-SIM-RECO/IDEAL_V11_redigi_v1/0000/048342F6-8ACB-DD11-A608-001D0967D616.root')
 )
 #############   Include the jet corrections ##########
-process.load("JetMETCorrections.Configuration.L2L3Corrections_Winter09_cff")
+process.load("JetMETCorrections.Configuration.L2L3Corrections_Summer08Redigi_cff")
 # set the record's IOV. Must be defined once. Choose ANY correction service. #
 process.prefer("L2L3JetCorrectorIC5Calo") 
 #############   Correct Calo Jets on the fly #########

@@ -12,16 +12,16 @@ process.maxEvents = cms.untracked.PSet(
 )
 #############   Define the source file ###############
 process.source = cms.Source("PoolSource",
-    fileNames = cms.untracked.vstring('/store/mc/Winter09/QCDDiJetPt380to470/GEN-SIM-DIGI-RECO/IDEAL_V11_FastSim_v1/0041/0894C59C-51D0-DD11-B828-003048322B3E.root')
+    fileNames = cms.untracked.vstring('/store/mc/Summer08/QCDDiJetPt80to120/GEN-SIM-RECO/IDEAL_V11_redigi_v1/0000/048342F6-8ACB-DD11-A608-001D0967D616.root')
 )
 #############   Define the L2 correction service #####
 process.L2RelativeJetCorrector = cms.ESSource("L2RelativeCorrectionService", 
-    tagName = cms.string('Winter09_L2Relative_IC5Calo'),
+    tagName = cms.string('Summer08Redigi_L2Relative_IC5Calo'),
     label = cms.string('L2RelativeJetCorrector')
 )
 #############   Define the L3 correction service #####
 process.L3AbsoluteJetCorrector = cms.ESSource("L3AbsoluteCorrectionService", 
-    tagName = cms.string('Winter09_L3Absolute_IC5Calo'),
+    tagName = cms.string('Summer08Redigi_L3Absolute_IC5Calo'),
     label = cms.string('L3AbsoluteJetCorrector')
 )
 #############   Define the L5 correction service #####
