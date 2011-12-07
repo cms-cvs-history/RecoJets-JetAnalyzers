@@ -31,16 +31,16 @@ PlotSuffix = "_Data"
 if isMC:
   PlotSuffix = "_MC"
   jecLevels = [
-    'GR_R_42_V19_AK5PFchs_L1FastJet.txt',
-    'GR_R_42_V19_AK5PFchs_L2Relative.txt',
-    'GR_R_42_V19_AK5PFchs_L3Absolute.txt'
+    'GR_R_42_V19_L1FastJet_AK5PFchs.txt',
+    'GR_R_42_V19_L2Relative_AK5PFchs.txt',
+    'GR_R_42_V19_L3Absolute_AK5PFchs.txt'
   ]
 else :
   jecLevels = [
-    'GR_R_42_V19_AK5PFchs_L1FastJet.txt',
-    'GR_R_42_V19_AK5PFchs_L2Relative.txt',
-    'GR_R_42_V19_AK5PFchs_L3Absolute.txt',
-    'GR_R_42_V19_AK5PFchs_L2L3Residual.txt'
+    'GR_R_42_V19_L1FastJet_AK5PFchs.txt',
+    'GR_R_42_V19_L2Relative_AK5PFchs.txt',
+    'GR_R_42_V19_L3Absolute_AK5PFchs.txt',
+    'GR_R_42_V19_L2L3Residual_AK5PFchs.txt'
   ]
 
 
@@ -97,7 +97,7 @@ process.pf = cms.EDAnalyzer("JetCorrectionsOnTheFly",
     rhoSrc = cms.InputTag('kt6PFJets', 'rho'),
     pvSrc  = cms.InputTag('goodOfflinePrimaryVertices'),
     jecPayloadNames = cms.vstring( jecLevels ),
-    jecUncName = cms.string('GR_R_42_V19_AK5PFchs_Uncertainty.txt') 
+    jecUncName = cms.string('GR_R_42_V19_Uncertainty_AK5PFchs.txt') 
 )
 
 
