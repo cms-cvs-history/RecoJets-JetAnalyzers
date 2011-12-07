@@ -29,6 +29,8 @@ JetCorrectionsOnTheFly::JetCorrectionsOnTheFly(edm::ParameterSet const& cfg) :
 
   // Make histograms in that directory
   theDir_->make<TH1F>("corrPt", "Corrected pt", 50, 0., 500.);
+  theDir_->make<TH1F>("corrPtUp", "Corrected pt Plus Uncertainty ", 50, 0., 500.);
+  theDir_->make<TH1F>("corrPtDown", "Corrected pt Minus Uncertainty ", 50, 0., 500.);
   
   //Get the factorized jet corrector parameters. 
   std::vector<JetCorrectorParameters> vPar;
@@ -91,8 +93,22 @@ void JetCorrectionsOnTheFly::analyze(edm::Event const& evt, edm::EventSetup cons
     jec_->setNPV   ( h_pv->size() );
     double corr = jec_->getCorrection();
 
+    // Now access the uncertainty on the jet energy correction.
+    // Pass the corrected jet pt to the "setJetPt" method. 
+
+    // Access the "scale up" uncertainty (+1)
+    jecUnc_->setJetEta( uncorrJet.eta() );
+    jecUnc_->setJetPt( corr * uncorrJet.pt() );
+    double corrUp = corr * (1 + fabs(jecUnc_->getUncertainty(1)));
+    // Access the "scale down" uncertainty (-1)
+    jecUnc_->setJetEta( uncorrJet.eta() );
+    jecUnc_->setJetPt( corr * uncorrJet.pt() );
+    double corrDown = corr * ( 1 - fabs(jecUnc_->getUncertainty(-1)) );
+
     // Now plot the value. 
     theDir_->getObject<TH1>( "corrPt"  )->Fill( corr * uncorrJet.pt() );
+    theDir_->getObject<TH1>( "corrPtUp"  )->Fill( corrUp * uncorrJet.pt() );
+    theDir_->getObject<TH1>( "corrPtDown"  )->Fill( corrDown * uncorrJet.pt() );
   }
   
 }
