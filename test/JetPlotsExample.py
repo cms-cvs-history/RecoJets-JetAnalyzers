@@ -30,6 +30,7 @@ CaloJetCollection = 'ak5CaloJets'
 JPTJetCollection  = 'JetPlusTrackZSPCorJetAntiKt5'
 #GenJetCollection  = 'ak5GenJets'
 PFJetCollection   = "goodPatJetsPFlow"
+PFJetCollectionTight   = "tightPatJetsPFlow"
 CAJetCollection   = "goodPatJetsCA8PF"
 CAPrunedJetCollection   = "goodPatJetsCA8PrunedPF"
 GenJetCollection  = "ak5GenJetsNoNu"
@@ -84,7 +85,17 @@ process.source = cms.Source("PoolSource",
 )
 process.source.inputCommands = cms.untracked.vstring("keep *","drop *_MEtoEDMConverter_*_*")
 
-
+##   ______     _      _      _
+##  |__  __|__ | |_   (_) __| |
+##  _  | |/ _ \| __/  | |/ _` |
+## | \_| |  __/| |_   | | (_| |
+##  \____|\___| \__|  |_|\__,_|
+##
+from PhysicsTools.SelectorUtils.pfJetIDSelector_cfi import pfJetIDSelector
+process.tightPatJetsPFlow = cms.EDFilter("PFJetIDSelectionFunctorFilter",
+                                         filterParams = pfJetIDSelector.clone(quality=cms.string("TIGHT")),
+                                         src = cms.InputTag("goodPatJetsPFlow")
+                                         )
 ##  ____  _       _       
 ## |  _ \| | ___ | |_ ___ 
 ## | |_) | |/ _ \| __/ __|
@@ -101,6 +112,12 @@ process.calo = cms.EDAnalyzer("CaloJetPlotsExample",
 process.pf = cms.EDAnalyzer("PFJetPlotsExample",
     JetAlgorithm  = cms.string(PFJetCollection),
     HistoFileName = cms.string('PFJetPlotsExample'+PlotSuffix+'.root'),
+    NJets         = cms.int32(NJetsToKeep)
+)
+#############   PF Jets, Tight Jet ID  ################
+process.pfTight = cms.EDAnalyzer("PFJetPlotsExample",
+    JetAlgorithm  = cms.string(PFJetCollectionTight),
+    HistoFileName = cms.string('PFJetTightPlotsExample'+PlotSuffix+'.root'),
     NJets         = cms.int32(NJetsToKeep)
 )
 
@@ -150,7 +167,9 @@ process.caPruned = cms.EDAnalyzer("PFJetPlotsExample",
 ## |_|   \__,_|\__|_| |_|
 
 ##process.myseq = cms.Sequence(process.calo*process.pf*process.jpt*process.gen)
-process.myseq = cms.Sequence(process.pf * process.gen * process.pfUncorr * process.ca * process.caPruned )
+process.myseq = cms.Sequence(process.pf * process.gen * process.pfUncorr *
+                             process.tightPatJetsPFlow * process.pfTight *
+                             process.ca * process.caPruned )
   
 if not isMC: 
   process.myseq.remove ( process.gen )
