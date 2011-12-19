@@ -49,6 +49,16 @@ void JetPlotsExample<Jet>::beginJob()
   m_HistNames1D[hname] = new TH1F(hname,hname,100,0.0,5.0);
   hname = "NumberOfJets";
   m_HistNames1D[hname] = new TH1F(hname,hname,100,0,100);
+  hname = "ChargedHadronEnergyFraction";
+  m_HistNames1D[hname] = new TH1F(hname,hname,100,0,1); 
+  hname = "NeutralHadronEnergyFraction";
+  m_HistNames1D[hname] = new TH1F(hname,hname,100,0,1); 
+  hname = "PhotonEnergyFraction";
+  m_HistNames1D[hname] = new TH1F(hname,hname,100,0,1); 
+  hname = "ElectronEnergyFraction";
+  m_HistNames1D[hname] = new TH1F(hname,hname,100,0,1); 
+  hname = "MuonEnergyFraction";
+  m_HistNames1D[hname] = new TH1F(hname,hname,100,0,1); 
 }
 ////////////////////////////////////////////////////////////////////////////////////////
 template<class Jet>
@@ -86,6 +96,17 @@ void JetPlotsExample<Jet>::analyze(edm::Event const& evt, edm::EventSetup const&
       FillHist1D(hname,(*i_jet).phi());
       hname = "JetArea";
       FillHist1D(hname,(*i_jet).jetArea());
+      hname = "ChargedHadronEnergyFraction";
+      FillHist1D(hname,(*i_jet).chargedHadronEnergyFraction()) ;
+      hname = "NeutralHadronEnergyFraction";
+      FillHist1D(hname,(*i_jet).neutralHadronEnergyFraction() );
+      hname = "PhotonEnergyFraction";
+      FillHist1D(hname,(*i_jet).photonEnergyFraction() );
+      hname = "ElectronEnergyFraction";
+      FillHist1D(hname,(*i_jet).electronEnergyFraction() );  
+      hname = "MuonEnergyFraction";
+      FillHist1D(hname,(*i_jet).muonEnergyFraction() );  
+
       index++;
     }
 }
