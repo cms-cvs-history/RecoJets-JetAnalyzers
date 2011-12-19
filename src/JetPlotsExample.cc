@@ -1,19 +1,14 @@
 // Implementation of template class: JetPlotsExample
 // Description:  Example of simple EDAnalyzer for jets.
-// Author: K. Kousouris
+// Author: K. Kousouris, K. Mishra, S. Rappoccio
 // Date:  25 - August - 2008
 #include "RecoJets/JetAnalyzers/interface/JetPlotsExample.h"
+#include "DataFormats/PatCandidates/interface/Jet.h"
+#include "DataFormats/PatCandidates/interface/Jet.h"
 #include "DataFormats/JetReco/interface/CaloJetCollection.h"
 #include "DataFormats/JetReco/interface/PFJetCollection.h"
 #include "DataFormats/JetReco/interface/GenJetCollection.h"
-#include "DataFormats/JetReco/interface/CaloJet.h"
-#include "DataFormats/JetReco/interface/PFJet.h"
-#include "DataFormats/JetReco/interface/GenJet.h"
-#include "DataFormats/JetReco/interface/JPTJet.h"
-#include "DataFormats/PatCandidates/interface/Jet.h"
 #include "DataFormats/JetReco/interface/JPTJetCollection.h"
-
-
 #include "FWCore/Framework/interface/Event.h"
 #include "FWCore/ParameterSet/interface/ParameterSet.h"
 #include <TFile.h>
@@ -75,19 +70,31 @@ void JetPlotsExample<Jet>::analyze(edm::Event const& evt, edm::EventSetup const&
   hname = "NumberOfJets";
   FillHist1D(hname,jets->size()); 
   /////////// Fill Histograms for the leading NJet jets ///
+ 
   edm::View<reco::Jet>::const_iterator i_jet, endpjets = jets->end(); 
    for (i_jet = jets->begin();  i_jet != endpjets && index < NJets;  ++i_jet) {
 
       double jecFactor = 1.0;
-      if ( useJecLevels ) {
-	edm::Ptr<reco::Jet> ptrToJet = jets->ptrAt( i_jet - jets->begin() );
-	if ( ptrToJet.isNonnull() && ptrToJet.isAvailable() ) {
-	  pat::Jet const * patJet = dynamic_cast<pat::Jet const *>( ptrToJet.get() );
-          if ( patJet != 0 ) {
-	    jecFactor = patJet->jecFactor( jecLevels );
-	  }
-        }
+      double chf = 0.0;
+      double nhf = 0.0;
+      double pef = 0.0;
+      double eef = 0.0;
+      double mef = 0;
+ 
+      edm::Ptr<reco::Jet> ptrToJet = jets->ptrAt( i_jet - jets->begin() );
+      if ( ptrToJet.isNonnull() && ptrToJet.isAvailable() ) {
+	pat::Jet const * patJet = dynamic_cast<pat::Jet const *>( ptrToJet.get() );
+	if ( patJet != 0 && patJet->isPFJet()) {
+
+	  chf = patJet->chargedHadronEnergyFraction();
+	  nhf = patJet->neutralHadronEnergyFraction();
+	  pef = patJet->photonEnergyFraction();
+	  eef = patJet->electronEnergy() / patJet->energy();
+	  mef = patJet->muonEnergyFraction();
+	  if ( useJecLevels ) jecFactor = patJet->jecFactor( jecLevels );
+	}
       }
+
       hname = "JetPt";
       FillHist1D(hname,(*i_jet).pt() * jecFactor );   
       hname = "JetEta";
@@ -97,16 +104,16 @@ void JetPlotsExample<Jet>::analyze(edm::Event const& evt, edm::EventSetup const&
       hname = "JetArea";
       FillHist1D(hname,(*i_jet).jetArea());
       hname = "ChargedHadronEnergyFraction";
-      FillHist1D(hname,(*i_jet).chargedHadronEnergyFraction()) ;
+      FillHist1D(hname, chf) ;
       hname = "NeutralHadronEnergyFraction";
-      FillHist1D(hname,(*i_jet).neutralHadronEnergyFraction() );
+      FillHist1D(hname, nhf);
       hname = "PhotonEnergyFraction";
-      FillHist1D(hname,(*i_jet).photonEnergyFraction() );
+      FillHist1D(hname, pef);
       hname = "ElectronEnergyFraction";
-      FillHist1D(hname,(*i_jet).electronEnergyFraction() );  
+      FillHist1D(hname, eef);  
       hname = "MuonEnergyFraction";
-      FillHist1D(hname,(*i_jet).muonEnergyFraction() );  
-
+      FillHist1D(hname, mef);  
+ 
       index++;
     }
 }
