@@ -53,10 +53,10 @@ class CMSDAS12ThreejetTestAnalyzer : public edm::EDAnalyzer {
     TH1F* hJetPhi;
 
     TH1F* hSumHT;
-
-    TH1F* hNGoodJets;
     TH1F* hSelHT;
+    TH1F* hNGoodJets;
     TH1F* hSelJetEta;
+    TH1F* hSelJetPhi;
     TH1F* hSelJetPt;
 
     TH1F* hGenjetMass;

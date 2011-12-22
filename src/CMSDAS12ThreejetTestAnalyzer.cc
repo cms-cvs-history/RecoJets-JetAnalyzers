@@ -1,4 +1,4 @@
-// Created: Mon Nov 7 21:58:01 CET 2011 $Id$
+// Created: Mon Nov 7 21:58:01 CET 2011 $Id: CMSDAS12ThreejetTestAnalyzer.cc,v 1.1.2.1 2011/12/18 18:49:17 kalanand Exp $
 
 #include "RecoJets/JetAnalyzers/interface/CMSDAS12ThreejetTestAnalyzer.h"
 
@@ -20,7 +20,8 @@ void CMSDAS12ThreejetTestAnalyzer::beginJob() {
   hNGoodJets         = new TH1F("hNGoodJets",         "Number of Selected Jets",                     100, 0.0, 100.0);
 
   //Jet Phi
-  hJetPhi            = new TH1F("hJetPhi",            "Jet #phi; Entries; Jet #phi",                 35, -3.5, 3.5);
+  hJetPhi            = new TH1F("hJetPhi",            "Jet #phi; Entries; Jet #phi",                 50, -TMath::Pi(), TMath::Pi());
+  hSelJetPhi         = new TH1F("hSelJetPhi",         "Jet #phi; Entries; Jet #phi",                 50, -TMath::Pi(), TMath::Pi());
 
   //Jet Pt
   hJetPt             = new TH1F("hJetPt",             "Jet p_{T}; Entries; Jet p_{T} (GeV)",         200, 0.0, 2000.);
@@ -56,43 +57,42 @@ void CMSDAS12ThreejetTestAnalyzer::analyze(const edm::Event& iEvent, const edm::
   iEvent.getByLabel("selectedPatJetsAK5PF", PatJets);
   std::vector<pat::Jet> const & Jets = *PatJets;
 
-  //Fill a histogram
-  hNJets->Fill(Jets.size());
-  
   //Define jet containers and iterators
   std::vector<pat::Jet> selectedJets;
   std::vector<pat::Jet>::const_iterator iJet;
   float sumHT    = 0.0;
-  float sumSelHT = 0.0;
+
+  //Fill a histogram
+  hNJets->Fill(Jets.size());
 
   for ( iJet =  Jets.begin(); iJet !=  Jets.end() ; ++iJet) {
     pat::Jet jet = *iJet;
+    
+    //Selection for high pT jets
+    if (jet.pt()        < 70.0) continue;
+    if (fabs(jet.eta()) > 3.0 ) continue;
 
     //Fill Histograms
     hJetPt ->Fill(jet.pt());
     hJetEta->Fill(jet.eta());
     hJetPhi->Fill(jet.phi());   
-    
+
     //Creating Sum HT for the event
     sumHT += jet.pt();
     
-    //Selection for high pT jets
-    if (jet.pt()        < 70.0) continue;
-    if (fabs(jet.eta()) > 3.0 ) continue;
-    
-    sumSelHT += jet.pt();
     selectedJets.push_back(jet);
   }
   hSumHT    -> Fill(sumHT);
   
-  if (selectedJets.size() < 6) return;
-  if (sumSelHT            < 700.) return;
+  if (selectedJets.size() < 6)    return;
+  if (sumHT               < 700.) return;
   
   //Cross check of histogram plots
-  hSelHT->Fill(sumSelHT);
+  hSelHT->Fill(sumHT);
   hNGoodJets-> Fill(selectedJets.size());
   hSelJetEta->Fill(selectedJets[5].eta());
   hSelJetPt ->Fill(selectedJets[5].pt());
+  hSelJetPhi->Fill(selectedJets[5].phi());
 
   //Select matched gen particles for triplet
   if (CMSDAS12ThreejetTestAnalyzer::findMCDaughters(selectedJets)){
@@ -151,6 +151,7 @@ void CMSDAS12ThreejetTestAnalyzer::endJob() {
   hNGoodJets->Write();
   hSelJetPt->Write();
   hSelJetEta->Write();
+  hSelJetPhi->Write();
   hSelHT->Write();
   hGenjetMass->Write();
   hGenjetMassVsSumPt->Write();
