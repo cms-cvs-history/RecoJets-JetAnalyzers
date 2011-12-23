@@ -14,7 +14,7 @@ import FWCore.ParameterSet.Config as cms
 ## | |_| | (_| | || (_| | | (_) | |    | |  | | |___ 
 ## |____/ \__,_|\__\__,_|  \___/|_|    |_|  |_|\____|
             
-isMC = False
+isMC = True
 ##isMC = True
 
 ##   ____             __ _                       _     _           
@@ -44,10 +44,10 @@ else :
   ]
 
 
-inputFile = '/store/user/lpctlbsm/vasquez/Jet/ttbsm_v9_Run2011A-May10ReReco/f8e845a0332c56398831da6c30999af1/ttbsm_42x_data_60_1_EbE.root'
 
+inputFile = '/store/user/cmsdas/2012/JetsShortExercise/ttbsm_42x_data_60_1_EbE.root'
 if isMC:
-  inputFile ='/store/user/lpctlbsm/srappocc/QCD_Pt-15to3000_TuneZ2_Flat_7TeV_pythia6/ttbsm_v8_Summer11-PU_S3_-START42_V11-v2/d870fa9b0dd695e8eb649b7e725d070f/ttbsm_42x_mc_86_2_fG3.root'
+  inputFile ='/store/user/cmsdas/2012/JetsShortExercise/ttbsm_42x_mc_86_2_fG3.root'
   
 
 ##  _            _           _           
@@ -76,7 +76,7 @@ process.TFileService = cms.Service("TFileService",
 
 #############   Set the number of events #############
 process.maxEvents = cms.untracked.PSet(
-    input = cms.untracked.int32(1000)
+    input = cms.untracked.int32(-1)
 )
 #############   Define the source file ###############
 process.source = cms.Source("PoolSource",
