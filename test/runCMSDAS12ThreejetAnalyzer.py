@@ -22,10 +22,10 @@ whichfiles= 1
 
  #############   Define the source file ###############
 if (whichfiles==1):
-    thefileNames = cms.untracked.vstring('file:/uscms_data/d2/duggan/CMSDAS/JetLongExcercise/Files/RPVgluinoPAT.root')
+    thefileNames = cms.untracked.vstring('file:/gpfs/gpfsddn/cms/user/cmsdas/2012/JetLongExercise/Files/RPVgluinoPAT.root')
 if (whichfiles==2):
-    thefileNames = cms.untracked.vstring('file:/uscms_data/d2/duggan/CMSDAS/JetLongExcercise/Files/HTDatav1v2May10Rereco_6Jet45GeVPAT.root',
-                                         'file:/uscms_data/d2/duggan/CMSDAS/JetLongExcercise/Files/HTDatav4_6Jet45GeVPAT.root')
+    thefileNames = cms.untracked.vstring('file:/gpfs/gpfsddn/cms/user/cmsdas/2012/JetLongExercise/Files/HTDatav1v2May10Rereco_6Jet45GeVPAT.root',
+                                         'file:/gpfs/gpfsddn/cms/user/cmsdas/2012/JetLongExercise/Files/HTDatav4_6Jet45GeVPAT.root')
 
 process.source = cms.Source("PoolSource", fileNames = thefileNames)
 
