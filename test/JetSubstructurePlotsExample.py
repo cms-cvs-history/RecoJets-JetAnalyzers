@@ -25,11 +25,11 @@ isMC = True
 PFJetCollection   = "goodPatJetsCA8PrunedPF"
 
 PlotSuffix = "_Data"
-inputFile = '/store/user/cmsdas/2012/JetsShortExercise/ttbsm_42x_data_60_1_EbE.root'
+inputFile = 'file:/gpfs/gpfsddn/cms/user/cmsdas/2012/JetsShortExercise/ttbsm_42x_data_60_1_EbE.root'
 
 if isMC:
   PlotSuffix = "_MC"  
-  inputFile ='/store/user/cmsdas/2012/JetsShortExercise/ttbsm_42x_mc_86_2_fG3.root'
+  inputFile ='file:/gpfs/gpfsddn/cms/user/cmsdas/2012/JetsShortExercise/ttbsm_42x_mc_86_2_fG3.root'
 
 
 
