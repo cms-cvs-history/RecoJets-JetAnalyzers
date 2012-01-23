@@ -36,11 +36,11 @@ CAPrunedJetCollection   = "goodPatJetsCA8PrunedPF"
 GenJetCollection  = "ak5GenJetsNoNu"
 
 PlotSuffix = "_Data"
-inputFile = '/store/user/cmsdas/2012/JetsShortExercise/ttbsm_42x_data_60_1_EbE.root'
+inputFile = '/gpfs/gpfsddn/cms/user/cmsdas/2012/JetsShortExercise/ttbsm_42x_data_60_1_EbE.root'
 
 if isMC:
   PlotSuffix = "_MC"  
-  inputFile ='/store/user/cmsdas/2012/JetsShortExercise/ttbsm_42x_mc_86_2_fG3.root'
+  inputFile ='/gpfs/gpfsddn/cms/user/cmsdas/2012/JetsShortExercise/ttbsm_42x_mc_86_2_fG3.root'
   
 
 ##   _            _           _           
