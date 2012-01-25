@@ -1,4 +1,4 @@
-// Created: Mon Nov 7 21:58:01 CET 2011 $Id: CMSDAS12ThreejetTestAnalyzer.cc,v 1.1.2.1 2011/12/18 18:49:17 kalanand Exp $
+// Created: Mon Nov 7 21:58:01 CET 2011 $Id: CMSDAS12ThreejetTestAnalyzer.cc,v 1.1.2.2 2011/12/22 19:10:43 duggan Exp $
 
 #include "RecoJets/JetAnalyzers/interface/CMSDAS12ThreejetTestAnalyzer.h"
 
@@ -36,11 +36,14 @@ void CMSDAS12ThreejetTestAnalyzer::beginJob() {
   hSelHT             = new TH1F("hSelHT",             "#Sigma H_{T}; Events; #Sigma H_{T} (GeV)",    150, 0.0, 3000.);
 
   //Jet triplet invariant mass
-  hPartonMass        = new TH1F("hPartonMass",        "Particle Jet Triplet Mass",                   150, 0.0, 3000.);
-  hGenjetMass        = new TH1F("hGenjetMass",        "GenJet Triplet Mass",                         150, 0.0, 3000.);
-  hMatchedMass       = new TH1F("hMatchedMass",       "PatJet Matched Triplet Mass",                 NBINS, BINNING);
-  hAllTripletMass    = new TH1F("hAllTripletMass",    "PatJet Triplet Mass (20 Combinations)",       NBINS, BINNING);
-  hTripletMass       = new TH1F("hTripletMass",       "PatJet Triplet Mass",                         NBINS, BINNING);
+  hPartonMass        = new TH1F("hPartonMass",        "Particle Jet Triplet Mass",                   300, 0.0, 3000.);
+  hGenjetMass        = new TH1F("hGenjetMass",        "GenJet Triplet Mass",                         300, 0.0, 3000.);
+  hMatchedMass       = new TH1F("hMatchedMass",       "PatJet Matched Triplet Mass",                 300, 0.0, 3000.);
+  hAllTripletMass    = new TH1F("hAllTripletMass",    "PatJet Triplet Mass (20 Combinations)",       300, 0.0, 3000.);
+  hTripletMass       = new TH1F("hTripletMass",       "PatJet Triplet Mass",                         300, 0.0, 3000.);
+  //hMatchedMass       = new TH1F("hMatchedMass",       "PatJet Matched Triplet Mass",                 NBINS, BINNING);
+  //hAllTripletMass    = new TH1F("hAllTripletMass",    "PatJet Triplet Mass (20 Combinations)",       NBINS, BINNING);
+  //hTripletMass       = new TH1F("hTripletMass",       "PatJet Triplet Mass",                         NBINS, BINNING);
 
 
   //2D Jet triplet mass vs. triplet scalar sum pt
@@ -65,79 +68,32 @@ void CMSDAS12ThreejetTestAnalyzer::analyze(const edm::Event& iEvent, const edm::
   //Fill a histogram
   hNJets->Fill(Jets.size());
 
+  //Looping over all jets
   for ( iJet =  Jets.begin(); iJet !=  Jets.end() ; ++iJet) {
     pat::Jet jet = *iJet;
-    
-    //Selection for high pT jets
-    if (jet.pt()        < 70.0) continue;
-    if (fabs(jet.eta()) > 3.0 ) continue;
 
+    //Accessing jet quantities
+    //jet.pt();
+    //jet.eta();
+    //jet.phi();
     //Fill Histograms
-    hJetPt ->Fill(jet.pt());
-    hJetEta->Fill(jet.eta());
-    hJetPhi->Fill(jet.phi());   
-
-    //Creating Sum HT for the event
-    sumHT += jet.pt();
+    //hJetPt ->Fill(jet.pt());
+    //hJetEta->Fill(jet.eta());
+    //hJetPhi->Fill(jet.phi());   
     
     selectedJets.push_back(jet);
   }
-  hSumHT    -> Fill(sumHT);
-  
-  if (selectedJets.size() < 6)    return;
-  if (sumHT               < 700.) return;
-  
-  //Cross check of histogram plots
-  hSelHT->Fill(sumHT);
-  hNGoodJets-> Fill(selectedJets.size());
-  hSelJetEta->Fill(selectedJets[5].eta());
-  hSelJetPt ->Fill(selectedJets[5].pt());
-  hSelJetPhi->Fill(selectedJets[5].phi());
+  //hSumHT    -> Fill(sumHT);
 
-  //Select matched gen particles for triplet
-  if (CMSDAS12ThreejetTestAnalyzer::findMCDaughters(selectedJets)){
-    //Plot 1D distribution of gluino daughters' invar. mass
-    float particleMass  = (partons[0]->p4() + partons[1]->p4() + partons[2]->p4()).mass();
-    float particleSumPt = (partons[0]->pt() + partons[1]->pt() + partons[2]->pt());
-    hPartonMass->Fill(particleMass);
-    hPartonMassVsSumPt->Fill(particleSumPt, particleMass);
-    
-    float genjetMass    = (genjets[0]->p4() + genjets[1]->p4() + genjets[2]->p4()).mass();
-    float genjetSumPt   = (genjets[0]->pt() + genjets[1]->pt() + genjets[2]->pt());
-    hGenjetMass->Fill(genjetMass);
-    hGenjetMassVsSumPt->Fill(genjetSumPt, genjetMass);
-    
-    //Now add reco jets associated to the matched jets and plot the 2D distribution
-    float matchedMass   = (matchedjets[0].p4() + matchedjets[1].p4() + matchedjets[2].p4()).mass();
-    float matchedSumPt  = (matchedjets[0].pt() + matchedjets[1].pt() + matchedjets[2].pt());
-    hMatchedMassVsSumPt->Fill(matchedSumPt, matchedMass);    
-    
-  }
-  
-  //Now compose all 20 triplet combinations of the 6 reconstructed jets
-  //selectedJets
+  //size of container for selected jets:
+  //selectedJets.size()
+  //access i^th jet of selected jets collection
+  //selectedJets[i]
+  //Accessing i^th jet's 4-vector:
+  //selectedJets[i].p4()
+  //Accessing i^th jet's invariant mass:
+  //selectedJets[i].mass()
 
-  for (int i = 0; i < 4; ++i){
-    pat::Jet jet1 = selectedJets[i];
-    for (int j = i+1; j < 5; ++j){
-      pat::Jet jet2 = selectedJets[j];
-      for (int k = j+1; k < 6; ++k){
-	pat::Jet jet3 = selectedJets[k];
-
-	float tripletmass  = (jet1.p4() + jet2.p4() + jet3.p4()).mass();
-	float tripletsumpt = (jet1.pt() + jet2.pt() + jet3.pt());
-
-	hAllTripletMass->Fill(tripletmass);
-	hAllTripletMassVsSumPt->Fill(tripletsumpt, tripletmass);
-
-	if (tripletmass > (tripletsumpt - 150.0)) continue;
-
-	hTripletMass->Fill(tripletmass);
-	hTripletMassVsSumPt->Fill(tripletsumpt, tripletmass);	
-      }
-    }
-  }
-  
 }
 
 
