@@ -72,6 +72,7 @@ void JetSubstructurePlotsExample::analyze(edm::Event const& evt, edm::EventSetup
   if ( ibegin->pt() < leadJetPtMin_ )
     return;
 
+
   // Loop over the "hard" jets
   for ( ; ijet != iend; ++ijet ) {
 

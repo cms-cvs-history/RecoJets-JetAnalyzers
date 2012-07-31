@@ -31,23 +31,22 @@ PlotSuffix = "_Data"
 if isMC:
   PlotSuffix = "_MC"
   jecLevels = [
-    'GR_R_42_V19_L1FastJet_AK5PFchs.txt',
-    'GR_R_42_V19_L2Relative_AK5PFchs.txt',
-    'GR_R_42_V19_L3Absolute_AK5PFchs.txt'
+    'GR_R_52_V7_L1FastJet_AK5PFchs.txt',
+    'GR_R_52_V7_L2Relative_AK5PFchs.txt',
+    'GR_R_52_V7_L3Absolute_AK5PFchs.txt'
   ]
 else :
   jecLevels = [
-    'GR_R_42_V19_L1FastJet_AK5PFchs.txt',
-    'GR_R_42_V19_L2Relative_AK5PFchs.txt',
-    'GR_R_42_V19_L3Absolute_AK5PFchs.txt',
-    'GR_R_42_V19_L2L3Residual_AK5PFchs.txt'
+    'GR_R_52_V7_L1FastJet_AK5PFchs.txt',
+    'GR_R_52_V7_L2Relative_AK5PFchs.txt',
+    'GR_R_52_V7_L3Absolute_AK5PFchs.txt',
+    'GR_R_52_V7_L2L3Residual_AK5PFchs.txt'
   ]
 
 
-
-inputFile = 'file:/gpfs/gpfsddn/cms/user/cmsdas/2012/JetsShortExercise/ttbsm_42x_data_60_1_EbE.root'
 if isMC:
-  inputFile ='file:/gpfs/gpfsddn/cms/user/cmsdas/2012/JetsShortExercise/ttbsm_42x_mc_86_2_fG3.root'
+  PlotSuffix = "_MC"  
+  inputFile ='file:ttbsm_52x_mc_128_1_lmR.root'
   
 
 ##  _            _           _           
@@ -76,7 +75,7 @@ process.TFileService = cms.Service("TFileService",
 
 #############   Set the number of events #############
 process.maxEvents = cms.untracked.PSet(
-    input = cms.untracked.int32(-1)
+    input = cms.untracked.int32(2000)
 )
 #############   Define the source file ###############
 process.source = cms.Source("PoolSource",
@@ -97,7 +96,7 @@ process.pf = cms.EDAnalyzer("JetCorrectionsOnTheFly",
     rhoSrc = cms.InputTag('kt6PFJets', 'rho'),
     pvSrc  = cms.InputTag('goodOfflinePrimaryVertices'),
     jecPayloadNames = cms.vstring( jecLevels ),
-    jecUncName = cms.string('GR_R_42_V19_Uncertainty_AK5PFchs.txt') 
+    jecUncName = cms.string('GR_R_52_V7_Uncertainty_AK5PFchs.txt') 
 )
 
 

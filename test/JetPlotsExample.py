@@ -36,11 +36,11 @@ CAPrunedJetCollection   = "goodPatJetsCA8PrunedPF"
 GenJetCollection  = "ak5GenJetsNoNu"
 
 PlotSuffix = "_Data"
-inputFile = 'file:/gpfs/gpfsddn/cms/user/cmsdas/2012/JetsShortExercise/ttbsm_42x_data_60_1_EbE.root'
+inputFile = 'file:ttbsm_52x_data_85_1_vmS.root'
 
 if isMC:
   PlotSuffix = "_MC"  
-  inputFile ='file:/gpfs/gpfsddn/cms/user/cmsdas/2012/JetsShortExercise/ttbsm_42x_mc_86_2_fG3.root'
+  inputFile ='file:ttbsm_52x_mc_128_1_lmR.root'
   
 
 ##   _            _           _           
@@ -65,7 +65,7 @@ process.MessageLogger.cerr.FwkReport.reportEvery = 10
 
 #############   Set the number of events #############
 process.maxEvents = cms.untracked.PSet(
-    input = cms.untracked.int32(-1)
+    input = cms.untracked.int32(2000)
 )
 #############   Define the source file ###############
 process.source = cms.Source("PoolSource",
