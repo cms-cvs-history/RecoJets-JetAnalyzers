@@ -43,7 +43,7 @@ if isMC:
 process = cms.Process("Ana")
 #############   Format MessageLogger #################
 process.load("FWCore.MessageService.MessageLogger_cfi")
-process.MessageLogger.cerr.FwkReport.reportEvery = 10
+process.MessageLogger.cerr.FwkReport.reportEvery = 100
 
 
 process.TFileService = cms.Service("TFileService",
@@ -60,7 +60,7 @@ process.TFileService = cms.Service("TFileService",
 
 #############   Set the number of events #############
 process.maxEvents = cms.untracked.PSet(
-    input = cms.untracked.int32(2000)
+    input = cms.untracked.int32(10000)
 )
 #############   Define the source file ###############
 process.source = cms.Source("PoolSource",

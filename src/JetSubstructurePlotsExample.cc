@@ -73,10 +73,13 @@ void JetSubstructurePlotsExample::analyze(edm::Event const& evt, edm::EventSetup
     return;
 
 
+
   // Loop over the "hard" jets
   for ( ; ijet != iend; ++ijet ) {
 
     if ( ijet->pt() < jetPtMin_ ) continue;
+
+
 
     // Plot the "hard jet" quantities
     theDir_->getObject<TH1>("hPt")->Fill( ijet->pt(), weight );
@@ -95,21 +98,26 @@ void JetSubstructurePlotsExample::analyze(edm::Event const& evt, edm::EventSetup
       reco::Jet const * subjet0 = dynamic_cast<reco::Jet const *>(ijet->daughter(0));
       reco::Jet const * subjet1 = dynamic_cast<reco::Jet const *>(ijet->daughter(1));
 
+
+
       // Ensure that we have two valid subjets
-      if ( subjet0 != 0 && subjet1 != 0 ) {
+      if ( subjet0 != 0 && subjet1 != 0  && subjet0->pt()>0. && subjet1->pt()>0.) {
 
 
 	// Order the subjets by mass, not pt!
-	if ( subjet1->mass() > subjet0->mass() ) {
+  if ( subjet1->mass() > subjet0->mass()) {
 	  reco::Jet const * temp = subjet0;
 	  subjet0 = subjet1;
 	  subjet1 = temp;
-	}
+  }
+
+
 
 	// Get TLorentzVectors to easily compute ptRel and dR to jet axis. 
 	TLorentzVector jet_p4( ijet->px(), ijet->py(), ijet->pz(), ijet->energy() );
 	TLorentzVector subjet0_p4( subjet0->px(), subjet0->py(), subjet0->pz(), subjet0->energy());
 	TLorentzVector subjet1_p4( subjet1->px(), subjet1->py(), subjet1->pz(), subjet1->energy());
+
 
 	// Compute the delta R between the subjets, and the "hard jet" axis
 	double dR0 = subjet0_p4.DeltaR( jet_p4 ) ;
@@ -121,6 +129,7 @@ void JetSubstructurePlotsExample::analyze(edm::Event const& evt, edm::EventSetup
 
 	// Fill the quantities for the leading mass subjet
 	theDir_->getObject<TH1>("hSubjet0Pt")->Fill( subjet0_p4.Perp(), weight );
+
 	theDir_->getObject<TH1>("hSubjet0Mass")->Fill( subjet0_p4.M(), weight );
 	theDir_->getObject<TH1>("hSubjet0Area")->Fill( subjet0->jetArea(), weight );
 	theDir_->getObject<TH1>("hSubjet0DeltaRCore")->Fill( dR0, weight );
@@ -128,11 +137,11 @@ void JetSubstructurePlotsExample::analyze(edm::Event const& evt, edm::EventSetup
 
 	// Fill the quantities for the lowest mass subjet
 	theDir_->getObject<TH1>("hSubjet1Pt")->Fill( subjet1_p4.Perp(), weight );
+
 	theDir_->getObject<TH1>("hSubjet1Mass")->Fill( subjet1_p4.M(), weight );
 	theDir_->getObject<TH1>("hSubjet1Area")->Fill( subjet1->jetArea(), weight );
 	theDir_->getObject<TH1>("hSubjet1DeltaRCore")->Fill( dR1, weight );
 	theDir_->getObject<TH1>("hSubjet1PtRelCore")->Fill( ptRel1, weight );
-
 
       }
     }
