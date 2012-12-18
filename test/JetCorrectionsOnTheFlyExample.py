@@ -28,6 +28,8 @@ PFJetCollection   = "goodPatJetsPFlow"
 
 
 PlotSuffix = "_Data"
+inputFile = 'file:ttbsm_53x_data_1_1_8sY.root'
+
 if isMC:
   PlotSuffix = "_MC"
   jecLevels = [

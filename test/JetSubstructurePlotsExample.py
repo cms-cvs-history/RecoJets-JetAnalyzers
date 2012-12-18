@@ -26,7 +26,7 @@ PFJetCollection   = "goodPatJetsCA8PrunedPF"
 
 
 PlotSuffix = "_Data"
-inputFile = 'file:ttbsm_52x_data_85_1_vmS.root'
+inputFile = 'file:ttbsm_53x_data_1_1_8sY.root'
 
 if isMC:
   PlotSuffix = "_MC"  
