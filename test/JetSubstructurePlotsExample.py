@@ -12,8 +12,12 @@ import FWCore.ParameterSet.Config as cms
 ## | |_| | (_| | || (_| | | (_) | |    | |  | | |___ 
 ## |____/ \__,_|\__\__,_|  \___/|_|    |_|  |_|\____|
             
-isMC = True
-##isMC = False
+isQCD = True
+#isQCD = False
+#isZprime = True
+isZprime = False
+#isData = True
+isData = False
 
 ##   ____             __ _                       _     _           
 ##  / ___|___  _ __  / _(_) __ _ _   _ _ __ __ _| |__ | | ___  ___ 
@@ -24,14 +28,17 @@ isMC = True
 
 PFJetCollection   = "goodPatJetsCA8PrunedPF"
 
+if isData:
+  PlotSuffix = "_Data"
+  inputFile = 'file:ttbsm_53x_data_1_1_8sY.root'
 
-PlotSuffix = "_Data"
-inputFile = 'file:ttbsm_53x_data_1_1_8sY.root'
-
-if isMC:
+if isQCD:
   PlotSuffix = "_MC"  
   inputFile ='file:ttbsm_52x_mc_128_1_lmR.root'
   
+if isZprime:
+  PlotSuffix = "_ZprimeMC"  
+  inputFile ='file:ttbsm_52x_mc_zprime1TeV.root'
 
 
 ##  _            _           _           
