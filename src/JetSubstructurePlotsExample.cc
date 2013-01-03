@@ -10,6 +10,11 @@
 #include <TFile.h>
 #include <TLorentzVector.h> 
 #include <cmath>
+#include "AnalysisDataFormats/TopObjects/interface/CATopJetTagInfo.h"
+#include "DataFormats/Math/interface/LorentzVector.h"
+#include "DataFormats/Math/interface/Vector.h"
+#include "DataFormats/PatCandidates/interface/Jet.h"
+
 ////////////////////////////////////////////////////////////////////////////////////////
 JetSubstructurePlotsExample::JetSubstructurePlotsExample(edm::ParameterSet const& cfg) :
   jetSrc_   (cfg.getParameter<edm::InputTag>("jetSrc") ),     // jet collection to get
@@ -40,6 +45,11 @@ JetSubstructurePlotsExample::JetSubstructurePlotsExample(edm::ParameterSet const
   theDir_->make<TH1F>("hDeltaRSubjet0Subjet1", "#Delta R distance bewteen subjets", 50, 0., 1.0);
   theDir_->make<TH1F>("hMassDrop", "Jet Mass Drop (highest mass subjet mass / jet mass)", 50, 0., 1.0);
   theDir_->make<TH1F>("hSubjetAsymmetry", "Subjet Asymmetry", 50, 0., 1.0);
+  theDir_->make<TH1F>("hCATopMass", "CATop Jet mass", 50, 0., 400.);
+  theDir_->make<TH1F>("hCATopMinMass", "CATop Jet minmass", 50, 0., 150.);
+  theDir_->make<TH1F>("hCATopNsubjets", "CATop Jet Nsubjets", 5, 0., 5.);
+  theDir_->make<TH1F>("hCATopPt", "CATop Jet Pt", 50, 0., 1000.);
+  theDir_->make<TH1F>("hCATopRapidity", "CATop Jet Rapdity", 50, -5.0, 5.0);
 
 }
 ////////////////////////////////////////////////////////////////////////////////////////
@@ -162,8 +172,46 @@ void JetSubstructurePlotsExample::analyze(edm::Event const& evt, edm::EventSetup
 
       }
     }
-
   }
+
+  //-----------------------------------------------------
+  //-- Part 2
+  //-----------------------------------------------------
+
+  // Now lets grab a different jet collection. These are CA R=0.8 jets on which the CMS top tagging algorithm has been run
+  edm::Handle<std::vector<pat::Jet> > h_topTag;
+  evt.getByLabel( "goodPatJetsCATopTagPF", h_topTag );
+
+  int jet_number = 0;
+
+  // Example - loop over all jets in collection
+  for ( std::vector<pat::Jet>::const_iterator jetBegin = h_topTag->begin(),
+      jetEnd = h_topTag->end(), ijet = jetBegin; ijet != jetEnd; ++ijet ) {
+
+    const reco::CATopJetTagInfo * catopTag = dynamic_cast<reco::CATopJetTagInfo const *>(ijet->tagInfo("CATop"));
+
+    double pt       = ijet->pt();
+    double eta      = ijet->eta();
+    double rapidity = ijet->rapidity();
+    double mass     = ijet->mass();
+    double minmass  = catopTag->properties().minMass;
+    double topmass  = catopTag->properties().topMass;
+    int nsubjets    = ijet->numberOfDaughters();
+    
+    if (pt>350){
+
+      if (jet_number<2){
+
+        theDir_->getObject<TH1>("hCATopMass")->Fill( mass, weight );
+        theDir_->getObject<TH1>("hCATopMinMass")->Fill( minmass, weight );
+        theDir_->getObject<TH1>("hCATopNsubjets")->Fill( nsubjets, weight );
+        theDir_->getObject<TH1>("hCATopPt")->Fill( pt, weight );
+        theDir_->getObject<TH1>("hCATopRapidity")->Fill( rapidity, weight );
+      }
+      jet_number++;
+    }
+  }
+
 }
 ////////////////////////////////////////////////////////////////////////////////////////
 void JetSubstructurePlotsExample::endJob() 

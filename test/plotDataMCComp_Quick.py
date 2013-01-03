@@ -67,7 +67,12 @@ hists = [
     'hSubjet1PtRelCore',
     'hDeltaRSubjet0Subjet1',
     'hMassDrop',
-    'hSubjetAsymmetry'
+    'hSubjetAsymmetry',
+    'hCATopMass',
+    'hCATopMinMass',
+    'hCATopNsubjets',
+    'hCATopPt',
+    'hCATopRapidity'
     ]
 
 outhists = []
