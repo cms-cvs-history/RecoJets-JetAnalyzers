@@ -22,7 +22,7 @@ parser.add_option('--inputFile1', metavar='F', type='string', action='store',
                   help='Input file 1')
 
 parser.add_option('--inputFile2', metavar='F', type='string', action='store',
-                  default='jetSubstructurePlotsExample_MC.root',
+                  default='jetSubstructurePlotsExample_QCDMC.root',
                   dest='inputFile2',
                   help='Input file 2')
 

@@ -12,10 +12,10 @@ import FWCore.ParameterSet.Config as cms
 ## | |_| | (_| | || (_| | | (_) | |    | |  | | |___ 
 ## |____/ \__,_|\__\__,_|  \___/|_|    |_|  |_|\____|
             
-isQCD = True
-#isQCD = False
-#isZprime = True
-isZprime = False
+isQCDMC = True
+#isQCDMC = False
+#isZprimeMC = True
+isZprimeMC = False
 #isData = True
 isData = False
 
@@ -32,11 +32,11 @@ if isData:
   PlotSuffix = "_Data"
   inputFile = 'file:ttbsm_53x_data_1_1_8sY.root'
 
-if isQCD:
-  PlotSuffix = "_MC"  
+if isQCDMC:
+  PlotSuffix = "_QCDMC"  
   inputFile ='file:ttbsm_52x_mc_128_1_lmR.root'
   
-if isZprime:
+if isZprimeMC:
   PlotSuffix = "_ZprimeMC"  
   inputFile ='file:ttbsm_52x_mc_zprime1TeV.root'
 
