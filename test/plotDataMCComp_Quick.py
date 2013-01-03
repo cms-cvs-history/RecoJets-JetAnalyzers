@@ -64,7 +64,10 @@ hists = [
     'hSubjet1Mass',
     'hSubjet1Area',
     'hSubjet1DeltaRCore',
-    'hSubjet1PtRelCore'
+    'hSubjet1PtRelCore',
+    'hDeltaRSubjet0Subjet1',
+    'hMassDrop',
+    'hSubjetAsymmetry'
     ]
 
 outhists = []
@@ -72,6 +75,7 @@ stacks = []
 canvs = []
 
 for ihist in hists:
+    print ihist
     h1 = f1.Get(options.dir + ihist)
     h2 = f2.Get(options.dir + ihist)
     hs = THStack( h1.GetName(), h1.GetTitle() )

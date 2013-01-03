@@ -37,6 +37,10 @@ JetSubstructurePlotsExample::JetSubstructurePlotsExample(edm::ParameterSet const
   theDir_->make<TH1F>("hSubjet1Area", "Subjet area, lowest mass subjet", 50, 0., 5.0);
   theDir_->make<TH1F>("hSubjet1DeltaRCore", "Subjet #Delta R to Jet Core, lowest mass subjet", 50, 0., 5.0);
   theDir_->make<TH1F>("hSubjet1PtRelCore", "Subjet P_{T}^{REL} to Jet Core, lowest mass subjet", 50, 0., 100.);
+  theDir_->make<TH1F>("hDeltaRSubjet0Subjet1", "#Delta R distance bewteen subjets", 50, 0., 1.0);
+  theDir_->make<TH1F>("hMassDrop", "Jet Mass Drop (highest mass subjet mass / jet mass)", 50, 0., 1.0);
+  theDir_->make<TH1F>("hSubjetAsymmetry", "Subjet Asymmetry", 50, 0., 1.0);
+
 }
 ////////////////////////////////////////////////////////////////////////////////////////
 void JetSubstructurePlotsExample::beginJob() 
@@ -123,9 +127,16 @@ void JetSubstructurePlotsExample::analyze(edm::Event const& evt, edm::EventSetup
 	double dR0 = subjet0_p4.DeltaR( jet_p4 ) ;
 	double dR1 = subjet1_p4.DeltaR( jet_p4 ) ;
 
+  // Compute the delta R between the two subjets
+  double dR = subjet0_p4.DeltaR( subjet1_p4 ) ;
+
 	// Compute the relative pt between the subjets, and the "hard jet" axis
 	double ptRel0 = subjet0_p4.Perp( jet_p4.Vect() );
 	double ptRel1 = subjet1_p4.Perp( jet_p4.Vect() );
+
+  // Compute substructure tagging variables
+  double massDrop = subjet0_p4.M()/jet_p4.M();
+  double subjetAsymmetry = std::min( subjet0_p4.Perp()*subjet0_p4.Perp(), subjet1_p4.Perp()*subjet1_p4.Perp()) * dR*dR / (jet_p4.M()*jet_p4.M());
 
 	// Fill the quantities for the leading mass subjet
 	theDir_->getObject<TH1>("hSubjet0Pt")->Fill( subjet0_p4.Perp(), weight );
@@ -142,6 +153,12 @@ void JetSubstructurePlotsExample::analyze(edm::Event const& evt, edm::EventSetup
 	theDir_->getObject<TH1>("hSubjet1Area")->Fill( subjet1->jetArea(), weight );
 	theDir_->getObject<TH1>("hSubjet1DeltaRCore")->Fill( dR1, weight );
 	theDir_->getObject<TH1>("hSubjet1PtRelCore")->Fill( ptRel1, weight );
+
+  // Fill the quantities for jet tagging variables
+  theDir_->getObject<TH1>("hDeltaRSubjet0Subjet1")->Fill( dR, weight );
+  theDir_->getObject<TH1>("hMassDrop")->Fill( massDrop, weight );
+  theDir_->getObject<TH1>("hSubjetAsymmetry")->Fill( subjetAsymmetry, weight );
+
 
       }
     }
