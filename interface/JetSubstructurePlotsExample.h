@@ -24,6 +24,8 @@ class JetSubstructurePlotsExample : public edm::EDAnalyzer
        void endJob();
 
        edm::InputTag            jetSrc_;      /// Jet source to plot
+       edm::InputTag            prunedJetSrc_;      /// Jet source to plot
+       edm::InputTag            caTopJetSrc_;      /// Jet source to plot
        double                   leadJetPtMin_;/// Minimum leading jet pt, in place to be above trigger threshold
        double                   jetPtMin_;    /// Minimum jet pt to plot
        TFileDirectory *         theDir_;      /// Histogram directory for this module

@@ -12,10 +12,10 @@ import FWCore.ParameterSet.Config as cms
 ## | |_| | (_| | || (_| | | (_) | |    | |  | | |___ 
 ## |____/ \__,_|\__\__,_|  \___/|_|    |_|  |_|\____|
             
-isQCDMC = True
-#isQCDMC = False
-#isZprimeMC = True
-isZprimeMC = False
+#isQCDMC = True
+isQCDMC = False
+isZprimeMC = True
+#isZprimeMC = False
 #isData = True
 isData = False
 
@@ -38,7 +38,8 @@ if isQCDMC:
   
 if isZprimeMC:
   PlotSuffix = "_ZprimeMC"  
-  inputFile ='file:ttbsm_52x_mc_zprime1TeV.root'
+  inputFile = 'file:/uscms_data/d1/jdolen/HATS/TT_Mtt_1000toInf_tlbsm_53x_v3_mc_96_1_abQ.root'
+  #inputFile ='file:ttbsm_52x_mc_zprime1TeV.root'
 
 
 ##  _            _           _           
@@ -67,7 +68,7 @@ process.TFileService = cms.Service("TFileService",
 
 #############   Set the number of events #############
 process.maxEvents = cms.untracked.PSet(
-    input = cms.untracked.int32(10000)
+    input = cms.untracked.int32(-1)
 )
 #############   Define the source file ###############
 process.source = cms.Source("PoolSource",
@@ -84,7 +85,9 @@ process.source.inputCommands = cms.untracked.vstring("keep *","drop *_MEtoEDMCon
 
 #############   PF Jets    ###########################
 process.pf = cms.EDAnalyzer("JetSubstructurePlotsExample",
-    jetSrc = cms.InputTag('goodPatJetsCA8PrunedPF'),
+    jetSrc = cms.InputTag('goodPatJetsCA8PF'),
+    prunedJetSrc = cms.InputTag('goodPatJetsCA8PrunedPFPacked'),
+    caTopJetSrc = cms.InputTag('goodPatJetsCATopTagPFPacked'),
     leadJetPtMin = cms.double(400.0),
     jetPtMin = cms.double(50.0)
 )
