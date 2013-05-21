@@ -25,3 +25,5 @@
 <use   name="PhysicsTools/PatUtils"/>
 <use   name="PhysicsTools/PatAlgos"/>
 <use   name="CondFormats/JetMETObjects"/>
+<use   name="fastjet"/>
+<use   name="JetSubstructure/SubstructureTools"/>
