@@ -12,12 +12,12 @@ import FWCore.ParameterSet.Config as cms
 ## | |_| | (_| | || (_| | | (_) | |    | |  | | |___ 
 ## |____/ \__,_|\__\__,_|  \___/|_|    |_|  |_|\____|
             
-#isQCDMC = True
-isQCDMC = False
-isZprimeMC = True
-#isZprimeMC = False
-#isData = True
-isData = False
+isQCDMC = True
+#isQCDMC = False
+#isZprimeMC = True
+isZprimeMC = False
+#isTTbarMC = True
+isTTbarMC = False
 
 ##   ____             __ _                       _     _           
 ##  / ___|___  _ __  / _(_) __ _ _   _ _ __ __ _| |__ | | ___  ___ 
@@ -26,20 +26,18 @@ isData = False
 ##  \____\___/|_| |_|_| |_|\__, |\__,_|_|  \__,_|_.__/|_|\___||___/
 ##                         |___/
 
-PFJetCollection   = "goodPatJetsCA8PrunedPF"
 
-if isData:
-  PlotSuffix = "_Data"
-  inputFile = 'file:ttbsm_53x_data_1_1_8sY.root'
+if isZprimeMC:
+  PlotSuffix = "_ZprimeMC"
+  inputFile = 'file:/uscms_data/d1/jdolen/HATS/ZPrimeToTTJets_M2000GeV_W20GeV_tlbsm_53x_v3_mc_1_1_ZzP.root'
 
 if isQCDMC:
   PlotSuffix = "_QCDMC"  
-  inputFile ='file:ttbsm_52x_mc_128_1_lmR.root'
+  inputFile ='file:/uscms_data/d1/jdolen/HATS/QCD_Pt-15to3000_TuneZ2star_Flat_8TeV_pythia6_00F65A31.root'
   
-if isZprimeMC:
-  PlotSuffix = "_ZprimeMC"  
+if isTTbarMC:
+  PlotSuffix = "_TTbarMC"  
   inputFile = 'file:/uscms_data/d1/jdolen/HATS/TT_Mtt_1000toInf_tlbsm_53x_v3_mc_96_1_abQ.root'
-  #inputFile ='file:ttbsm_52x_mc_zprime1TeV.root'
 
 
 ##  _            _           _           
@@ -68,7 +66,7 @@ process.TFileService = cms.Service("TFileService",
 
 #############   Set the number of events #############
 process.maxEvents = cms.untracked.PSet(
-    input = cms.untracked.int32(-1)
+    input = cms.untracked.int32(5000)
 )
 #############   Define the source file ###############
 process.source = cms.Source("PoolSource",

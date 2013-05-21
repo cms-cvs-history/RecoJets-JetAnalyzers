@@ -5,6 +5,7 @@
 #ifndef JetSubstructurePlotsExample_h
 #define JetSubstructurePlotsExample_h
 #include <TH1.h>
+#include <TH2.h>
 #include <TFile.h>
 #include "TNamed.h"
 #include <vector>
