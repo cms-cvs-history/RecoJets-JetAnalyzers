@@ -2,32 +2,13 @@
 // Description:  Example of simple EDAnalyzer for jets.
 // Author: K. Kousouris
 // Date:  25 - August - 2008
+// Updated for Hands-on Advanced Training Session (HATS) on Jet Substructure - May 29 2013 
+// Instructors: Jake Anderson, James Dolen, Kalanand Mishra, Ilya Osipenkov, Nhan Tran. 
 
 #include "RecoJets/JetAnalyzers/interface/JetSubstructurePlotsExample.h"
-#include <cmath>
-#include <TMath.h>
-#include "DataFormats/JetReco/interface/Jet.h"
-#include "FWCore/Framework/interface/Event.h"
-#include "FWCore/ParameterSet/interface/ParameterSet.h"
-#include "SimDataFormats/GeneratorProducts/interface/GenEventInfoProduct.h"
-#include <TFile.h>
-#include <TLorentzVector.h> 
-#include "AnalysisDataFormats/TopObjects/interface/CATopJetTagInfo.h"
-#include "DataFormats/Math/interface/LorentzVector.h"
-#include "DataFormats/Math/interface/Vector.h"
-#include "DataFormats/PatCandidates/interface/Jet.h"
-#include  <iostream> 
-#include <fastjet/JetDefinition.hh>
-#include <fastjet/PseudoJet.hh>
-#include "fastjet/tools/Filter.hh"
-#include <fastjet/ClusterSequence.hh>
-#include <fastjet/ActiveAreaSpec.hh>
-#include <fastjet/ClusterSequenceArea.hh>
-#include <fastjet/tools/JHTopTagger.hh>
-#include <fastjet/Selector.hh>
-#include "fastjet/tools/Filter.hh"
-#include "fastjet/tools/Pruner.hh"
 #include "JetSubstructure/SubstructureTools/interface/JetSubstructureTools.h"
+#include <stdio.h>      /* printf */
+#include <time.h>       /* time_t, struct tm, difftime, time, mktime */
 
 ////////////////////////////////////////////////////////////////////////////////////////
 JetSubstructurePlotsExample::JetSubstructurePlotsExample(edm::ParameterSet const& cfg) :
@@ -35,17 +16,30 @@ JetSubstructurePlotsExample::JetSubstructurePlotsExample(edm::ParameterSet const
   prunedJetSrc_   (cfg.getParameter<edm::InputTag>("prunedJetSrc") ),     // jet collection to get
   caTopJetSrc_   (cfg.getParameter<edm::InputTag>("caTopJetSrc") ),     // jet collection to get
   leadJetPtMin_ (cfg.getParameter<double>("leadJetPtMin") ),  // minimum jet pt of leading jet
-  jetPtMin_ (cfg.getParameter<double>("jetPtMin") )           // minimum jet pt of all jets
+  jetPtMin_ (cfg.getParameter<double>("jetPtMin") ),           // minimum jet pt of all jets
+  runQjets_ (cfg.getParameter<bool>("runQjets") ) 
 {
 
-  // Get the TFileService to handle plots
+  // TFileService is used to store histograms
   edm::Service<TFileService> fileService;
   theDir_ = &*fileService;
 
-  // Make histograms in that directory
+  // Some basic histograms
   theDir_->make<TH1F>("hNvtx", "Number of good primary vertices", 100, 0., 100.);
+
+
+  // Compare jet clustering algorithms
+  theDir_->make<TH1F>("hAK5JetPt",   "AK5 Jet Pt",   50, 0., 2000.);
+  theDir_->make<TH1F>("hCA8JetPt",   "CA8 Jet Pt",   50, 0., 2000.);
   theDir_->make<TH1F>("hAK5JetMass", "AK5 Jet Mass", 50, 0., 400.);
   theDir_->make<TH1F>("hCA8JetMass", "CA8 Jet Mass", 50, 0., 400.);
+  theDir_->make<TH1F>("hAK5JetArea", "AK5 Jet Area", 50, 0., 4.);
+  theDir_->make<TH1F>("hCA8JetArea", "CA8 Jet Area", 50, 0., 4.);
+  theDir_->make<TH1F>("hAK5JetNconstituents",   "AK5 Jet Nconstituents",   50, 0., 200.);
+  theDir_->make<TH1F>("hCA8JetNconstituents",   "CA8 Jet Nconstituents",   50, 0., 200.);
+  theDir_->make<TH1F>("hAK5JetRapidity",   "AK5 Jet Rapidity",   50, -3, 3);
+  theDir_->make<TH1F>("hCA8JetRapidity",   "CA8 Jet Rapidity",   50, -3, 3);
+  theDir_->make<TH1F>("hCA8DijetMass",   "CA8 Dijet Mass",   100, 0, 3000);
 
   
   // Substuructure algorithms
@@ -60,35 +54,73 @@ JetSubstructurePlotsExample::JetSubstructurePlotsExample(edm::ParameterSet const
   theDir_->make<TH1F>("hTau2", "Tau2", 50, 0., 1);
   theDir_->make<TH1F>("hTau32", "Nsubjettiness Tau3/Tau2", 50, 0., 1.);
 
+  theDir_->make<TH1F>("h_cutMass_TrimmedMass", "Trimmed Jet Mass", 50, 0., 400.);
+  theDir_->make<TH1F>("h_cutMass_TrimmedArea", "Trimmed Jet Area", 50, 0., 2);
+  theDir_->make<TH1F>("h_cutMass_PrunedMass", "Pruned Jet Mass", 50, 0., 400.);
+  theDir_->make<TH1F>("h_cutMass_PrunedArea", "Pruned Jet Area", 50, 0., 2.);
+  theDir_->make<TH1F>("h_cutMass_FilteredMass", "Filtered Jet Mass", 50, 0., 400.);
+  theDir_->make<TH1F>("h_cutMass_FilteredArea", "Filtered Jet Area", 50, 0., 2);
+  theDir_->make<TH1F>("h_cutMass_QjetVolatility", "Qjets volatiliity", 50, 0., 1);
+  theDir_->make<TH1F>("h_cutMass_Tau3", "Tau3", 50, 0., 1);
+  theDir_->make<TH1F>("h_cutMass_Tau2", "Tau2", 50, 0., 1);
+  theDir_->make<TH1F>("h_cutMass_Tau32", "Nsubjettiness Tau3/Tau2", 50, 0., 1.);
+
+
+  theDir_->make<TH1F>("hPt_denom",   "Jet pT",   50, 0., 2000.);
+  theDir_->make<TH1F>("hPt_QjetTag",   "Jet pT - Qjet Volatility <0.2",   50, 0., 2000.);
+  theDir_->make<TH1F>("hPt_Tau32Tag",   "Jet pT - tau32<0.4",   50, 0., 2000.);
+  theDir_->make<TH1F>("hPt_PrunedMassTag",   "Jet pT - pruned mass in W mass window",   50, 0., 2000.);
+
 
   // Substructure variables from pruned jets
-  theDir_->make<TH1F>("hPt", "Jet pt", 100, 0., 2000.);
-  theDir_->make<TH1F>("hRapidity", "Jet Rapidity", 50, -5.0, 5.0);
-  theDir_->make<TH1F>("hPhi", "Jet Azimuthal Angle", 50, -TMath::Pi(), TMath::Pi());
-  theDir_->make<TH1F>("hMass", "Jet Mass", 50, 0., 400.);
-  theDir_->make<TH1F>("hArea", "Jet Area", 50, 0., 5.0);
-  theDir_->make<TH1F>("hSubjet0Pt", "Subjet pt, highest mass subjet", 50, 0., 1000.);
-  theDir_->make<TH1F>("hSubjet0Mass", "Subjet mass, highest mass subjet", 50, 0., 500.);
-  theDir_->make<TH1F>("hSubjet0Area", "Subjet area, highest mass subjet", 50, 0., 5.0);
-  theDir_->make<TH1F>("hSubjet0DeltaRCore", "Subjet #Delta R to Jet Core, highest mass subjet", 50, 0., 5.0);
-  theDir_->make<TH1F>("hSubjet0PtRelCore", "Subjet P_{T}^{REL} to Jet Core, highest mass subjet", 50, 0., 100.);
-  theDir_->make<TH1F>("hSubjet1Pt", "Subjet pt, lowest mass subjet", 50, 0., 1000.);
-  theDir_->make<TH1F>("hSubjet1Mass", "Subjet mass, lowest mass subjet", 50, 0., 500.);
-  theDir_->make<TH1F>("hSubjet1Area", "Subjet area, lowest mass subjet", 50, 0., 5.0);
-  theDir_->make<TH1F>("hSubjet1DeltaRCore", "Subjet #Delta R to Jet Core, lowest mass subjet", 50, 0., 5.0);
-  theDir_->make<TH1F>("hSubjet1PtRelCore", "Subjet P_{T}^{REL} to Jet Core, lowest mass subjet", 50, 0., 100.);
-  theDir_->make<TH1F>("hDeltaRSubjet0Subjet1", "#Delta R distance bewteen subjets", 50, 0., 1.0);
-  theDir_->make<TH1F>("hMassDrop", "Jet Mass Drop (highest mass subjet mass / jet mass)", 50, 0., 1.0);
-  theDir_->make<TH1F>("hSubjetAsymmetry", "Subjet Asymmetry", 50, 0., 1.0);
+  theDir_->make<TH1F>("h_prunedJet_Pt",       "Jet pt", 50, 0., 2000.);
+  theDir_->make<TH1F>("h_prunedJet_Rapidity", "Jet Rapidity", 50, -5.0, 5.0);
+  theDir_->make<TH1F>("h_prunedJet_Phi",      "Jet Azimuthal Angle", 50, -TMath::Pi(), TMath::Pi());
+  theDir_->make<TH1F>("h_prunedJet_Mass",     "Jet Mass", 50, 0., 400.);
+  theDir_->make<TH1F>("h_prunedJet_Area",     "Jet Area", 50, 0., 5.0);
+  theDir_->make<TH1F>("h_prunedJet_Subjet0Pt",            "Subjet pt, highest mass subjet", 50, 0., 1000.);
+  theDir_->make<TH1F>("h_prunedJet_Subjet0Mass",          "Subjet mass, highest mass subjet", 50, 0., 500.);
+  theDir_->make<TH1F>("h_prunedJet_Subjet0Area",          "Subjet area, highest mass subjet", 50, 0., 5.0);
+  theDir_->make<TH1F>("h_prunedJet_Subjet0DeltaRCore",    "Subjet #Delta R to Jet Core, highest mass subjet", 50, 0., 5.0);
+  theDir_->make<TH1F>("h_prunedJet_Subjet0PtRelCore",     "Subjet P_{T}^{REL} to Jet Core, highest mass subjet", 50, 0., 100.);
+  theDir_->make<TH1F>("h_prunedJet_Subjet1Pt",            "Subjet pt, lowest mass subjet", 50, 0., 1000.);
+  theDir_->make<TH1F>("h_prunedJet_Subjet1Mass",          "Subjet mass, lowest mass subjet", 50, 0., 500.);
+  theDir_->make<TH1F>("h_prunedJet_Subjet1Area",          "Subjet area, lowest mass subjet", 50, 0., 5.0);
+  theDir_->make<TH1F>("h_prunedJet_Subjet1DeltaRCore",    "Subjet #Delta R to Jet Core, lowest mass subjet", 50, 0., 5.0);
+  theDir_->make<TH1F>("h_prunedJet_Subjet1PtRelCore",     "Subjet P_{T}^{REL} to Jet Core, lowest mass subjet", 50, 0., 100.);
+  theDir_->make<TH1F>("h_prunedJet_DeltaRSubjet0Subjet1", "#Delta R distance bewteen subjets", 50, 0., 1.0);
+  theDir_->make<TH1F>("h_prunedJet_MassDrop",             "Jet Mass Drop (highest mass subjet mass / jet mass)", 50, 0., 1.0);
+  theDir_->make<TH1F>("h_prunedJet_SubjetAsymmetry",      "Subjet Asymmetry", 50, 0., 1.0);
 
-
-  // CMSTopTagger
-  theDir_->make<TH1F>("hCATopMass", "CATop Jet mass", 50, 0., 400.);
-  theDir_->make<TH1F>("hCATopMinMass", "CATop Jet minmass", 50, 0., 150.);
-  theDir_->make<TH1F>("hCATopNsubjets", "CATop Jet Nsubjets", 5, 0., 5.);
-  theDir_->make<TH1F>("hCATopPt", "CATop Jet Pt", 50, 0., 1000.);
-  theDir_->make<TH1F>("hCATopRapidity", "CATop Jet Rapdity", 50, -5.0, 5.0);
+  theDir_->make<TH1F>("h_prunedJet_cutMass_Subjet0Pt",            "Subjet pt, highest mass subjet - top mass window", 50, 0., 1000.);
+  theDir_->make<TH1F>("h_prunedJet_cutMass_Subjet0Mass",          "Subjet mass, highest mass subjet - top mass window", 50, 0., 500.);
+  theDir_->make<TH1F>("h_prunedJet_cutMass_Subjet0Area",          "Subjet area, highest mass subjet - top mass window", 50, 0., 5.0);
+  theDir_->make<TH1F>("h_prunedJet_cutMass_Subjet0DeltaRCore",    "Subjet #Delta R to Jet Core, highest mass subjet - top mass window", 50, 0., 5.0);
+  theDir_->make<TH1F>("h_prunedJet_cutMass_Subjet0PtRelCore",     "Subjet P_{T}^{REL} to Jet Core, highest mass subjet - top mass window", 50, 0., 100.);
+  theDir_->make<TH1F>("h_prunedJet_cutMass_Subjet1Pt",            "Subjet pt, lowest mass subjet - top mass window", 50, 0., 1000.);
+  theDir_->make<TH1F>("h_prunedJet_cutMass_Subjet1Mass",          "Subjet mass, lowest mass subjet - top mass window", 50, 0., 500.);
+  theDir_->make<TH1F>("h_prunedJet_cutMass_Subjet1Area",          "Subjet area, lowest mass subjet - top mass window", 50, 0., 5.0);
+  theDir_->make<TH1F>("h_prunedJet_cutMass_Subjet1DeltaRCore",    "Subjet #Delta R to Jet Core, lowest mass subjet - top mass window", 50, 0., 5.0);
+  theDir_->make<TH1F>("h_prunedJet_cutMass_Subjet1PtRelCore",     "Subjet P_{T}^{REL} to Jet Core, lowest mass subjet - top mass window", 50, 0., 100.);
+  theDir_->make<TH1F>("h_prunedJet_cutMass_DeltaRSubjet0Subjet1", "#Delta R distance bewteen subjets - top mass window", 50, 0., 1.0);
+  theDir_->make<TH1F>("h_prunedJet_cutMass_MassDrop",             "Jet Mass Drop (highest mass subjet mass / jet mass) - top mass window", 50, 0., 1.0);
+  theDir_->make<TH1F>("h_prunedJet_cutMass_SubjetAsymmetry",      "Subjet Asymmetry - top mass window", 50, 0., 1.0);   
   
+  // CMSTopTagger
+  theDir_->make<TH1F>("hCATopMass",     "CATop Jet mass",     50,   0., 400.);
+  theDir_->make<TH1F>("hCATopMinMass",  "CATop Jet minmass",  50,   0., 150.);
+  theDir_->make<TH1F>("hCATopNsubjets", "CATop Jet Nsubjets", 5,    0., 5.);
+  theDir_->make<TH1F>("hCATopPt",       "CATop Jet Pt",       50,   0., 2000.);
+  theDir_->make<TH1F>("hCATopRapidity", "CATop Jet Rapdity",  50, -5.0, 5.0);
+  
+  theDir_->make<TH1F>("h_cutMass_CATopMass",     "CATop Jet mass",     50,   0., 400.);
+  theDir_->make<TH1F>("h_cutMass_CATopMinMass",  "CATop Jet minmass",  50,   0., 150.);
+  theDir_->make<TH1F>("h_cutMass_CATopNsubjets", "CATop Jet Nsubjets", 5,    0., 5.);
+  theDir_->make<TH1F>("h_cutMass_CATopPt",       "CATop Jet Pt",       50,   0., 2000.);
+  theDir_->make<TH1F>("h_cutMass_CATopRapidity", "CATop Jet Rapdity",  50, -5.0, 5.0);
+
+  theDir_->make<TH1F>("h_cutMassNsubjets_CATopMinMass",  "CATop Jet minmass - top mass window, Nsubjets>=3",  50,   0., 150.);
+  theDir_->make<TH1F>("h_cutMassNsubjetsMinMass_CATopPt",  "CATop Jet pt - top tagged", 50,   0., 2000.);
 
   // 2D histograms
   theDir_->make<TH2F>("h2AK5JetMassPt"  , "h2AK5JetMassPt", 100, 0., 2000, 50, 0., 400 );
@@ -102,6 +134,9 @@ JetSubstructurePlotsExample::JetSubstructurePlotsExample(edm::ParameterSet const
   theDir_->make<TH2F>("h2PrunedMassNvtx"  , "h2PrunedMassNvtx", 50, 0., 50, 50, 0., 400 );
   theDir_->make<TH2F>("h2TrimmedMassNvtx" , "h2TrimmedMassNvtx", 50, 0., 50, 50, 0., 400 );
   theDir_->make<TH2F>("h2FilteredMassNvtx", "h2FilteredMassNvtx", 50, 0., 50, 50, 0., 400 );
+
+
+
 
 }
 ////////////////////////////////////////////////////////////////////////////////////////
@@ -146,7 +181,7 @@ void JetSubstructurePlotsExample::analyze(edm::Event const& evt, edm::EventSetup
 
 
   //-----------------------------------------------------
-  //-- Part 1a - basic jets
+  //-- Part 1ab - basic jets
   //--   Compare anti-kt R=0.5 and Cambrdige Aachen R=0.8
   //-----------------------------------------------------
 
@@ -160,18 +195,21 @@ void JetSubstructurePlotsExample::analyze(edm::Event const& evt, edm::EventSetup
     if (count_AK5<2)
     {
       double pt             = ijet->pt();
-      double phi            = ijet->phi();
-      double eta            = ijet->eta();
       double rapidity       = ijet->rapidity();
       double mass           = ijet->mass();
       double nconst         = ijet->numberOfDaughters();
-      double flavour        = ijet->partonFlavour();
+      double area           = ijet->jetArea();
 
       if (pt>300) 
       {
-        theDir_->getObject<TH1>("hAK5JetMass")      ->Fill( mass  , weight );
-        theDir_->getObject<TH2>("h2AK5JetMassPt")    ->Fill( pt,  mass  , weight );
-        theDir_->getObject<TH2>("h2AK5JetMassNvtx")  ->Fill( count_good_vertex, mass  , weight );
+        theDir_->getObject<TH1>("hAK5JetPt")            ->Fill( pt  , weight );
+        theDir_->getObject<TH1>("hAK5JetMass")          ->Fill( mass  , weight );
+        theDir_->getObject<TH1>("hAK5JetArea")          ->Fill( area  , weight );
+        theDir_->getObject<TH1>("hAK5JetNconstituents") ->Fill( nconst  , weight );
+        theDir_->getObject<TH1>("hAK5JetRapidity")      ->Fill( rapidity  , weight );
+
+        theDir_->getObject<TH2>("h2AK5JetMassPt")     ->Fill( pt,  mass  , weight );
+        theDir_->getObject<TH2>("h2AK5JetMassNvtx")   ->Fill( count_good_vertex, mass  , weight );
       } 
     }
     count_AK5++;
@@ -181,31 +219,46 @@ void JetSubstructurePlotsExample::analyze(edm::Event const& evt, edm::EventSetup
   edm::Handle<std::vector<pat::Jet> > h_CA8PF;
   evt.getByLabel( jetSrc_, h_CA8PF );
 
+  TLorentzVector jet0_p4;
+  TLorentzVector jet1_p4;
+   math::XYZTLorentzVector pair_sum_p4;
+
   int count_CA8 = 0;
+  int count_CA8_hard = 0;
   for ( std::vector<pat::Jet>::const_iterator jetBegin = h_CA8PF->begin(), jetEnd = h_CA8PF->end(), ijet = jetBegin; ijet != jetEnd; ++ijet ) 
   {   
     if (count_CA8<2)
     {
       double pt             = ijet->pt();
-      double phi            = ijet->phi();
-      double eta            = ijet->eta();
       double rapidity       = ijet->rapidity();
       double mass           = ijet->mass();
       double nconst         = ijet->numberOfDaughters();
-      double flavour        = ijet->partonFlavour();
+      double area           = ijet->jetArea();
 
       if (pt>300) 
       {
-        theDir_->getObject<TH1>("hCA8JetMass")      ->Fill( mass  , weight );
-        theDir_->getObject<TH2>("h2CA8JetMassPt")    ->Fill( pt,  mass  , weight );
-        theDir_->getObject<TH2>("h2CA8JetMassNvtx")  ->Fill( count_good_vertex, mass  , weight );
+        count_CA8_hard++;
+        theDir_->getObject<TH1>("hCA8JetPt")            ->Fill( pt  , weight );
+        theDir_->getObject<TH1>("hCA8JetMass")          ->Fill( mass  , weight );
+        theDir_->getObject<TH1>("hCA8JetArea")          ->Fill( area  , weight );
+        theDir_->getObject<TH1>("hCA8JetNconstituents") ->Fill( nconst  , weight );
+        theDir_->getObject<TH1>("hCA8JetRapidity")      ->Fill( rapidity  , weight );
+
+        theDir_->getObject<TH2>("h2CA8JetMassPt")     ->Fill( pt,  mass  , weight );
+        theDir_->getObject<TH2>("h2CA8JetMassNvtx")   ->Fill( count_good_vertex, mass  , weight );
+
+        if (count_CA8<=1)  pair_sum_p4 += ijet->p4();
       } 
     }
     count_CA8++;
   }
 
+  if (count_CA8_hard>1) theDir_->getObject<TH1>("hCA8DijetMass")      ->Fill( pair_sum_p4.M()  , weight );
+
+
+
   //-----------------------------------------------------
-  //-- Part 1b - jet grooming
+  //-- Part 1c - jet grooming
   //--   Access a collection of Cambrdige Aachen R=0.8 PATtuple
   //--   Loop over the jet constituents
   //--   Use  JetSubstructureTools class to recluster jets and calculate jet substructure variables
@@ -249,6 +302,7 @@ void JetSubstructurePlotsExample::analyze(edm::Event const& evt, edm::EventSetup
       // Use external class to calculate substrucutre variables
       JetSubstructureTools *tmp = new JetSubstructureTools( 0.8, vec_px, vec_py, vec_pz, vec_e, vec_id);
 
+
       // trimmed jet (arXiv:0912.1342)
       float rtrim = 0.2;
       float ptfrac = 0.03;
@@ -263,7 +317,7 @@ void JetSubstructurePlotsExample::analyze(edm::Event const& evt, edm::EventSetup
       float pruned_jet_mass  = tmp->getPrunedJet( zcut, rcut ).m();
       float pruned_jet_area  = tmp->getPrunedJet( zcut, rcut ).area();
 
-      // fitlered jet
+      // filtered jet ( arXiv:0802.2470)
       float rfilt = 0.3;
       int nfilt = 3;
 
@@ -272,7 +326,8 @@ void JetSubstructurePlotsExample::analyze(edm::Event const& evt, edm::EventSetup
 
       // Qjet (arXiv:1201.1914)
       int event = evt.id().event();
-      float qjet_volatility  = tmp->getQjetVolatility( event, 50, 25 );  // seed random number with event number
+      float qjet_volatility  = -1;
+      if (runQjets_) qjet_volatility  = tmp->getQjetVolatility( event, 50, 25 );  // event number (used for random seed), Ntrees, Number of particles to precluster
 
       // Nsubjettiness (arXiv:1011.2268)
       float tau2 = tmp->getTau( 2, 1.0 );  //2subjettiness
@@ -302,7 +357,28 @@ void JetSubstructurePlotsExample::analyze(edm::Event const& evt, edm::EventSetup
       theDir_->getObject<TH2>("h2TrimmedMassNvtx")   ->Fill( count_good_vertex, trimmed_jet_mass,  weight );
       theDir_->getObject<TH2>("h2FilteredMassNvtx")  ->Fill( count_good_vertex, filtered_jet_mass, weight );
 
+      // Some plots for efficiency curves
+      theDir_->getObject<TH1>("hPt_denom")      ->Fill( ijet->pt()   , weight );
+      if ( qjet_volatility <0.2)  theDir_->getObject<TH1>("hPt_QjetTag")       ->Fill( ijet->pt()  , weight );
+      if ( tau32 <0.4)  theDir_->getObject<TH1>("hPt_Tau32Tag")                ->Fill( ijet->pt()   , weight );
+      if ( pruned_jet_mass <100 && pruned_jet_mass > 60)  theDir_->getObject<TH1>("hPt_PrunedMassTag")                ->Fill(ijet->pt()   , weight );
 
+      // plot these variables for jets with mass in the top mass window
+      if ( ijet->mass()>140 && ijet->mass()<250 ) 
+      {
+
+        theDir_->getObject<TH1>("h_cutMass_TrimmedMass")    ->Fill( trimmed_jet_mass  , weight );
+        theDir_->getObject<TH1>("h_cutMass_TrimmedArea")    ->Fill( trimmed_jet_area  , weight );
+        theDir_->getObject<TH1>("h_cutMass_PrunedMass")     ->Fill( pruned_jet_mass   , weight );
+        theDir_->getObject<TH1>("h_cutMass_PrunedArea")     ->Fill( pruned_jet_area   , weight );
+        theDir_->getObject<TH1>("h_cutMass_FilteredMass")   ->Fill( filtered_jet_mass , weight );
+        theDir_->getObject<TH1>("h_cutMass_FilteredArea")   ->Fill( filtered_jet_area , weight );
+        theDir_->getObject<TH1>("h_cutMass_QjetVolatility") ->Fill( qjet_volatility   , weight );
+        theDir_->getObject<TH1>("h_cutMass_Tau3")           ->Fill( tau3              , weight );
+        theDir_->getObject<TH1>("h_cutMass_Tau2")           ->Fill( tau2              , weight );
+        theDir_->getObject<TH1>("h_cutMass_Tau32")          ->Fill( tau32             , weight );
+
+      }
 
       //clean up
       vec_px.clear();
@@ -338,89 +414,99 @@ void JetSubstructurePlotsExample::analyze(edm::Event const& evt, edm::EventSetup
     return;
 
 
-
   // Loop over the "hard" jets
-  for ( ; ijet != iend; ++ijet ) {
+  for ( ; ijet != iend; ++ijet ) 
+  {
 
     if ( ijet->pt() < jetPtMin_ ) continue;
 
-
-
     // Plot the "hard jet" quantities
-    theDir_->getObject<TH1>("hPt")->Fill( ijet->pt(), weight );
-    theDir_->getObject<TH1>("hRapidity")->Fill( ijet->rapidity(), weight );
-    theDir_->getObject<TH1>("hPhi")->Fill( ijet->phi(), weight );
-    theDir_->getObject<TH1>("hMass")->Fill( ijet->mass(), weight );
-    theDir_->getObject<TH1>("hArea")->Fill( ijet->jetArea(), weight );
-
+    theDir_->getObject<TH1>("h_prunedJet_Pt")->Fill( ijet->pt(), weight );
+    theDir_->getObject<TH1>("h_prunedJet_Rapidity")->Fill( ijet->rapidity(), weight );
+    theDir_->getObject<TH1>("h_prunedJet_Phi")->Fill( ijet->phi(), weight );
+    theDir_->getObject<TH1>("h_prunedJet_Mass")->Fill( ijet->mass(), weight );
+    theDir_->getObject<TH1>("h_prunedJet_Area")->Fill( ijet->jetArea(), weight );
 
     // Examine the subjets of this "hard jet". 
     // In this case, we're looking at the jet pruning algorithm
     // where we have requested 2 subjets. You can change this
     // in your own analysis, and is a configurable parameter. 
-    if ( ijet->numberOfDaughters() >= 2 ) {
-
+    if ( ijet->numberOfDaughters() >= 2 ) 
+    {
       reco::Jet const * subjet0 = dynamic_cast<reco::Jet const *>(ijet->daughter(0));
       reco::Jet const * subjet1 = dynamic_cast<reco::Jet const *>(ijet->daughter(1));
 
-
-
       // Ensure that we have two valid subjets
-      if ( subjet0 != 0 && subjet1 != 0  && subjet0->pt()>0. && subjet1->pt()>0.) {
+      if ( subjet0 != 0 && subjet1 != 0  && subjet0->pt()>0. && subjet1->pt()>0.) 
+      {
 
+        // Order the subjets by mass, not pt!
+        if ( subjet1->mass() > subjet0->mass()) {
+          reco::Jet const * temp = subjet0;
+          subjet0 = subjet1;
+          subjet1 = temp;
+        }
 
-  // Order the subjets by mass, not pt!
-  if ( subjet1->mass() > subjet0->mass()) {
-    reco::Jet const * temp = subjet0;
-    subjet0 = subjet1;
-    subjet1 = temp;
-  }
+        // Get TLorentzVectors to easily compute ptRel and dR to jet axis. 
+        TLorentzVector jet_p4( ijet->px(), ijet->py(), ijet->pz(), ijet->energy() );
+        TLorentzVector subjet0_p4( subjet0->px(), subjet0->py(), subjet0->pz(), subjet0->energy());
+        TLorentzVector subjet1_p4( subjet1->px(), subjet1->py(), subjet1->pz(), subjet1->energy());
 
+        // Compute the delta R between the subjets, and the "hard jet" axis
+        float dR0 = subjet0_p4.DeltaR( jet_p4 ) ;
+        float dR1 = subjet1_p4.DeltaR( jet_p4 ) ;
 
+        // Compute the delta R between the two subjets
+        float dR = subjet0_p4.DeltaR( subjet1_p4 ) ;
 
-  // Get TLorentzVectors to easily compute ptRel and dR to jet axis. 
-  TLorentzVector jet_p4( ijet->px(), ijet->py(), ijet->pz(), ijet->energy() );
-  TLorentzVector subjet0_p4( subjet0->px(), subjet0->py(), subjet0->pz(), subjet0->energy());
-  TLorentzVector subjet1_p4( subjet1->px(), subjet1->py(), subjet1->pz(), subjet1->energy());
+        // Compute the relative pt between the subjets, and the "hard jet" axis
+        float ptRel0 = subjet0_p4.Perp( jet_p4.Vect() );
+        float ptRel1 = subjet1_p4.Perp( jet_p4.Vect() );
 
+        // Compute substructure tagging variables
+        float massDrop = subjet0_p4.M()/jet_p4.M();
+        float subjetAsymmetry = std::min( subjet0_p4.Perp()*subjet0_p4.Perp(), subjet1_p4.Perp()*subjet1_p4.Perp()) * dR*dR / (jet_p4.M()*jet_p4.M());
 
-  // Compute the delta R between the subjets, and the "hard jet" axis
-  float dR0 = subjet0_p4.DeltaR( jet_p4 ) ;
-  float dR1 = subjet1_p4.DeltaR( jet_p4 ) ;
+        // Fill the quantities for the leading mass subjet
+        theDir_->getObject<TH1>("h_prunedJet_Subjet0Pt")->Fill( subjet0_p4.Perp(), weight );
 
-  // Compute the delta R between the two subjets
-  float dR = subjet0_p4.DeltaR( subjet1_p4 ) ;
+        theDir_->getObject<TH1>("h_prunedJet_Subjet0Mass")->Fill( subjet0_p4.M(), weight );
+        theDir_->getObject<TH1>("h_prunedJet_Subjet0Area")->Fill( subjet0->jetArea(), weight );
+        theDir_->getObject<TH1>("h_prunedJet_Subjet0DeltaRCore")->Fill( dR0, weight );
+        theDir_->getObject<TH1>("h_prunedJet_Subjet0PtRelCore")->Fill( ptRel0, weight );
 
-  // Compute the relative pt between the subjets, and the "hard jet" axis
-  float ptRel0 = subjet0_p4.Perp( jet_p4.Vect() );
-  float ptRel1 = subjet1_p4.Perp( jet_p4.Vect() );
+        // Fill the quantities for the lowest mass subjet
+        theDir_->getObject<TH1>("h_prunedJet_Subjet1Pt")->Fill( subjet1_p4.Perp(), weight );
 
-  // Compute substructure tagging variables
-  float massDrop = subjet0_p4.M()/jet_p4.M();
-  float subjetAsymmetry = std::min( subjet0_p4.Perp()*subjet0_p4.Perp(), subjet1_p4.Perp()*subjet1_p4.Perp()) * dR*dR / (jet_p4.M()*jet_p4.M());
+        theDir_->getObject<TH1>("h_prunedJet_Subjet1Mass")->Fill( subjet1_p4.M(), weight );
+        theDir_->getObject<TH1>("h_prunedJet_Subjet1Area")->Fill( subjet1->jetArea(), weight );
+        theDir_->getObject<TH1>("h_prunedJet_Subjet1DeltaRCore")->Fill( dR1, weight );
+        theDir_->getObject<TH1>("h_prunedJet_Subjet1PtRelCore")->Fill( ptRel1, weight );
 
-  // Fill the quantities for the leading mass subjet
-  theDir_->getObject<TH1>("hSubjet0Pt")->Fill( subjet0_p4.Perp(), weight );
+        // Fill the quantities for jet tagging variables
+        theDir_->getObject<TH1>("h_prunedJet_DeltaRSubjet0Subjet1")->Fill( dR, weight );
+        theDir_->getObject<TH1>("h_prunedJet_MassDrop")->Fill( massDrop, weight );
+        theDir_->getObject<TH1>("h_prunedJet_SubjetAsymmetry")->Fill( subjetAsymmetry, weight );
 
-  theDir_->getObject<TH1>("hSubjet0Mass")->Fill( subjet0_p4.M(), weight );
-  theDir_->getObject<TH1>("hSubjet0Area")->Fill( subjet0->jetArea(), weight );
-  theDir_->getObject<TH1>("hSubjet0DeltaRCore")->Fill( dR0, weight );
-  theDir_->getObject<TH1>("hSubjet0PtRelCore")->Fill( ptRel0, weight );
+        // plot these variables for jets with mass in the top mass window
+        if ( ijet->mass()>140 && ijet->mass()<250 )
+        {
 
-  // Fill the quantities for the lowest mass subjet
-  theDir_->getObject<TH1>("hSubjet1Pt")->Fill( subjet1_p4.Perp(), weight );
+          theDir_->getObject<TH1>("h_prunedJet_cutMass_Subjet0Pt")->Fill( subjet0_p4.Perp(), weight );
+          theDir_->getObject<TH1>("h_prunedJet_cutMass_Subjet0Mass")->Fill( subjet0_p4.M(), weight );
+          theDir_->getObject<TH1>("h_prunedJet_cutMass_Subjet0Area")->Fill( subjet0->jetArea(), weight );
+          theDir_->getObject<TH1>("h_prunedJet_cutMass_Subjet0DeltaRCore")->Fill( dR0, weight );
+          theDir_->getObject<TH1>("h_prunedJet_cutMass_Subjet0PtRelCore")->Fill( ptRel0, weight );
+          theDir_->getObject<TH1>("h_prunedJet_cutMass_Subjet1Pt")->Fill( subjet1_p4.Perp(), weight );
+          theDir_->getObject<TH1>("h_prunedJet_cutMass_Subjet1Mass")->Fill( subjet1_p4.M(), weight );
+          theDir_->getObject<TH1>("h_prunedJet_cutMass_Subjet1Area")->Fill( subjet1->jetArea(), weight );
+          theDir_->getObject<TH1>("h_prunedJet_cutMass_Subjet1DeltaRCore")->Fill( dR1, weight );
+          theDir_->getObject<TH1>("h_prunedJet_cutMass_Subjet1PtRelCore")->Fill( ptRel1, weight );
+          theDir_->getObject<TH1>("h_prunedJet_cutMass_DeltaRSubjet0Subjet1")->Fill( dR, weight );
+          theDir_->getObject<TH1>("h_prunedJet_cutMass_MassDrop")->Fill( massDrop, weight );
+          theDir_->getObject<TH1>("h_prunedJet_cutMass_SubjetAsymmetry")->Fill( subjetAsymmetry, weight );
 
-  theDir_->getObject<TH1>("hSubjet1Mass")->Fill( subjet1_p4.M(), weight );
-  theDir_->getObject<TH1>("hSubjet1Area")->Fill( subjet1->jetArea(), weight );
-  theDir_->getObject<TH1>("hSubjet1DeltaRCore")->Fill( dR1, weight );
-  theDir_->getObject<TH1>("hSubjet1PtRelCore")->Fill( ptRel1, weight );
-
-  // Fill the quantities for jet tagging variables
-  theDir_->getObject<TH1>("hDeltaRSubjet0Subjet1")->Fill( dR, weight );
-  theDir_->getObject<TH1>("hMassDrop")->Fill( massDrop, weight );
-  theDir_->getObject<TH1>("hSubjetAsymmetry")->Fill( subjetAsymmetry, weight );
-
-
+        }
       }
     }
   }
@@ -442,11 +528,9 @@ void JetSubstructurePlotsExample::analyze(edm::Event const& evt, edm::EventSetup
     const reco::CATopJetTagInfo * catopTag = dynamic_cast<reco::CATopJetTagInfo const *>(ijet->tagInfo("CATop"));
 
     float pt       = ijet->pt();
-    float eta      = ijet->eta();
     float rapidity = ijet->rapidity();
     float mass     = ijet->mass();
     float minmass  = catopTag->properties().minMass;
-    float topmass  = catopTag->properties().topMass;
     int nsubjets    = ijet->numberOfDaughters();
     
     if (pt>350){
@@ -458,6 +542,22 @@ void JetSubstructurePlotsExample::analyze(edm::Event const& evt, edm::EventSetup
         theDir_->getObject<TH1>("hCATopNsubjets")->Fill( nsubjets, weight );
         theDir_->getObject<TH1>("hCATopPt")->Fill( pt, weight );
         theDir_->getObject<TH1>("hCATopRapidity")->Fill( rapidity, weight );
+
+         // plot these variables for jets with mass in the top mass window
+        if ( mass >140 && mass <250 )
+        {
+          theDir_->getObject<TH1>("h_cutMass_CATopMass")->Fill( mass, weight );
+          theDir_->getObject<TH1>("h_cutMass_CATopMinMass")->Fill( minmass, weight );
+          theDir_->getObject<TH1>("h_cutMass_CATopNsubjets")->Fill( nsubjets, weight );
+          theDir_->getObject<TH1>("h_cutMass_CATopPt")->Fill( pt, weight );
+          theDir_->getObject<TH1>("h_cutMass_CATopRapidity")->Fill( rapidity, weight );
+        } 
+
+        if ( mass >140 && mass <250 && nsubjets >=3 )
+        {
+          theDir_->getObject<TH1>("h_cutMassNsubjets_CATopMinMass")->Fill( minmass, weight );
+          if (minmass>50)  theDir_->getObject<TH1>("h_cutMassNsubjetsMinMass_CATopPt")->Fill( pt, weight );
+        }
       }
       jet_number++;
     }
