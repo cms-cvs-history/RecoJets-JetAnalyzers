@@ -5,6 +5,7 @@
 # description: compares two histograms from one root file
 # instructions:
 #  python -i plot_Compare2Histos.py
+#  python -i plot_Compare2Histos.py --inputFile1=jetSubstructurePlotsExample_QCDMC.root
 ###################
 
 
@@ -34,6 +35,12 @@ parser.add_option('--outname', metavar='O', type='string', action='store',
 (options, args) = parser.parse_args()
 
 argv = []
+
+
+gROOT.Reset()
+#gStyle.SetTitleOffset(1.5,"Y")
+gStyle.SetTitleSize(0.05,"XY")
+
 
 canvs = []
 outhists = []
@@ -73,7 +80,6 @@ def plot(hist1,hist2,title,label1,label2,savename) :
   hs.Add( h1clone, 'hist' )
   hs.Add( h2clone, 'hist' )
 
-  #c = TCanvas('c', 'c',  200, 10, 750, 500 )
   c = TCanvas('c_' + hist1 + '_' + hist2, 'c_' + hist1 + '_' + hist2,  200, 10, 750, 500 )
   hs.Draw('nostack')
 
@@ -110,16 +116,16 @@ plot( "hAK5JetRapidity","hCA8JetRapidity","Jet Rapidity- Compare Algorithms;Jetr
 ## EXERCISE 1C
 
 # ###### compare jet mass for groomed and ungroomed jets
-# plot("hCA8JetMass","hPrunedMass","Pruned mass;Jet Mass;Number of jets","Ungroomed","Pruned","Plot_Mass_ComparePruned.png")
-# plot("hCA8JetMass","hTrimmedMass","Trimmed mass;Jet Mass;Number of jets","Ungroomed","Trimmed","Plot_Mass_CompareTrimmed.png")
-# plot("hCA8JetMass","hFilteredMass","Filtered mass;Jet Mass;Number of jets","Ungroomed","Filtered","Plot_Mass_CompareTrimmed.png")
-# plot("hTrimmedMass","hPrunedMass","Compare trimmed and pruned area;Jet Mass;Number of jets","Trimmed","Pruned","Plot_Mass_CompareTrimmedPruned.png")
+# plot("hCA8JetMass","hPrunedMass","Pruned mass;Jet Mass;Number of jets","Ungroomed","Pruned","plots/Plot_Mass_ComparePruned.png")
+# plot("hCA8JetMass","hTrimmedMass","Trimmed mass;Jet Mass;Number of jets","Ungroomed","Trimmed","plots/Plot_Mass_CompareTrimmed.png")
+# plot("hCA8JetMass","hFilteredMass","Filtered mass;Jet Mass;Number of jets","Ungroomed","Filtered","plots/Plot_Mass_CompareFiltered.png")
+# plot("hTrimmedMass","hPrunedMass","Compare trimmed and pruned area;Jet Mass;Number of jets","Trimmed","Pruned","plots/Plot_Mass_CompareTrimmedPruned.png")
 
 # ###### compare jet area for groomed and ungroomed jets
-# plot("hCA8JetArea","hPrunedArea","Compare ungroomed and pruned jet area;Jet Area;Number of jets","Ungroomed","Pruned","Plot_Area_CompareNormalPruned.png")
-# plot("hCA8JetArea","hTrimmedArea","Compare ungroomed and trimmed jet area;Jet Area;Number of jets","Ungroomed","Trimmed","Plot_Area_CompareNormalTrimmed.png")
-# plot("hCA8JetArea","hFilteredArea","Compare ungroomed and filtered jet area;Jet Area;Number of jets","Ungroomed","Filtered","Plot_Area_CompareNormalFiltered.png")
-# plot("hTrimmedArea","hPrunedArea","Compare trimmed and pruned area;Jet Area;Number of jets","Trimmed","Pruned","Plot_Area_CompareTrimmedPruned.png")
+# plot("hCA8JetArea","hPrunedArea","Compare ungroomed and pruned jet area;Jet Area;Number of jets","Ungroomed","Pruned","plots/Plot_Area_ComparePruned.png")
+# plot("hCA8JetArea","hTrimmedArea","Compare ungroomed and trimmed jet area;Jet Area;Number of jets","Ungroomed","Trimmed","plots/Plot_Area_CompareTrimmed.png")
+# plot("hCA8JetArea","hFilteredArea","Compare ungroomed and filtered jet area;Jet Area;Number of jets","Ungroomed","Filtered","plots/Plot_Area_CompareFiltered.png")
+# plot("hTrimmedArea","hPrunedArea","Compare trimmed and pruned area;Jet Area;Number of jets","Trimmed","Pruned","plots/Plot_Area_CompareTrimmedPruned.png")
 
 ############################################
 ## EXERCISE 1B

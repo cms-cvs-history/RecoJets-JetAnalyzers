@@ -11,7 +11,7 @@
   gStyle->SetOptStat(0); 
   gROOT->Reset();
 
-  TFile * F1  = new TFile("jetSubstructurePlotsExample_QCDMC.root");   ////~190126 events
+  TFile * F1  = new TFile("jetSubstructurePlotsExample_QCDMC.root");  
 
   TH2D * MassNvtx1  = (TH2D*)F1->Get("pf/h2AK5JetMassNvtx");
   TH2D * MassNvtx2  = (TH2D*)F1->Get("pf/h2CA8JetMassNvtx");

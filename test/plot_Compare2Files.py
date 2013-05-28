@@ -1,19 +1,13 @@
 #!/usr/bin/env python
 
-
-# ===================================================
-#             plot_Compare2Files.py
-#
-# ===================================================
-#    Compares the data and MC distributions from
-#    a simple substructure analysis of dijet data
-# ===================================================
-
 ###################
 # plot_Compare2Files.py
 # description: compares histograms from two root files
 # instructions:
+# default input files:
 #  python -i plot_Compare2Files.py
+# choose input files:
+#  python -i plot_Compare2Files.py --inputFile1=jetSubstructurePlotsExample_ZprimeMC.root --inputFile2=jetSubstructurePlotsExample_QCDMC.root --label1=tt --label2=QCD
 ###################
 
 from ROOT import *
@@ -45,6 +39,15 @@ parser.add_option('--dir', metavar='D', type='string', action='store',
                   dest='dir',
                   help='directory to find plots')
 
+parser.add_option('--label1', metavar='L', type='string', action='store',
+                  default='RS->WW',
+                  dest='label1',
+                  help='Input file 1 label')
+
+parser.add_option('--label2', metavar='L', type='string', action='store',
+                  default='QCD',
+                  dest='label2',
+                  help='Input file 2 label')
 
 (options, args) = parser.parse_args()
 
@@ -67,7 +70,9 @@ hists = [
     'hQjetVolatility',
     'hTau3',
     'hTau2',
+    'hTau1',
     'hTau32',
+    'hTau21',
     'h_prunedJet_Pt',
     'h_prunedJet_Mass',
     'h_prunedJet_Area',
@@ -96,6 +101,7 @@ hists = [
 outhists = []
 stacks = []
 canvs = []
+leg = []
 
 for ihist in hists:
     print ihist
@@ -120,9 +126,10 @@ for ihist in hists:
 
     legend=TLegend(0.83,0.4,0.98,0.8)
     legend.SetFillColor(0);
-    legend.AddEntry(h1,"ttbar", "l")
-    legend.AddEntry(h2, "QCD", "l")    
+    legend.AddEntry(h1,options.label1, "l")
+    legend.AddEntry(h2,options.label2, "l")    
     legend.Draw()
 
+    leg.append(legend)
     canvs.append(c)
     c.SaveAs('plots/Compare2_'+ihist+'.png')
