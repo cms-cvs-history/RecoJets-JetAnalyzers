@@ -62,38 +62,44 @@ f2 = TFile(options.inputFile2)
 
 
 hists = [
+    ###################################
+    ##### EXERCISE 1a
     'hAK5JetMass',
     'hCA8JetMass',
-    'hTrimmedMass',
-    'hPrunedMass',
-    'hFilteredMass',
-    'hQjetVolatility',
-    'hTau3',
-    'hTau2',
-    'hTau1',
-    'hTau32',
-    'hTau21',
-    'h_prunedJet_Pt',
-    'h_prunedJet_Mass',
-    'h_prunedJet_Area',
-    'h_prunedJet_Subjet0Pt',
-    'h_prunedJet_Subjet0Mass',
-    'h_prunedJet_Subjet0Area',
-    'h_prunedJet_Subjet0DeltaRCore',
-    'h_prunedJet_Subjet0PtRelCore',
-    'h_prunedJet_Subjet1Pt',
-    'h_prunedJet_Subjet1Mass',
-    'h_prunedJet_Subjet1Area',
-    'h_prunedJet_Subjet1DeltaRCore',
-    'h_prunedJet_Subjet1PtRelCore',
-    'h_prunedJet_DeltaRSubjet0Subjet1',
-    'h_prunedJet_MassDrop',
-    'h_prunedJet_SubjetAsymmetry',
-    'h_prunedJet_cutMass_MassDrop',
-    'h_prunedJet_cutMass_SubjetAsymmetry',
-    'hCATopMass',
-    'hCATopMinMass',
-    'hCATopNsubjets'
+    # ##################################
+    # #### EXERCISE 1c
+    # 'hTrimmedMass',
+    # 'hPrunedMass',
+    # 'hFilteredMass',
+    # ##################################
+    # #### EXERCISE 2ab
+    # 'hQjetVolatility',
+    # 'hTau3',
+    # 'hTau2',
+    # 'hTau1',
+    # 'hTau32',
+    # 'hTau21',
+    # 'hJetCharge',
+    # 'hCATopMass',
+    # 'hCATopMinMass',
+    # 'hCATopNsubjets',
+    # 'h_prunedJet_MassDrop',
+    # 'h_prunedJet_SubjetAsymmetry',
+    # ##################################
+    # #### addtional plots if we have time in session 2
+    # 'h_prunedJet_Subjet0Pt',
+    # 'h_prunedJet_Subjet0Mass',
+    # 'h_prunedJet_Subjet0Area',
+    # 'h_prunedJet_Subjet0DeltaRCore',
+    # 'h_prunedJet_Subjet0PtRelCore',
+    # 'h_prunedJet_Subjet1Pt',
+    # 'h_prunedJet_Subjet1Mass',
+    # 'h_prunedJet_Subjet1Area',
+    # 'h_prunedJet_Subjet1DeltaRCore',
+    # 'h_prunedJet_Subjet1PtRelCore',
+    # 'h_prunedJet_DeltaRSubjet0Subjet1',
+    # 'h_prunedJet_cutMass_MassDrop',
+    # 'h_prunedJet_cutMass_SubjetAsymmetry'
     ]
 
 

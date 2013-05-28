@@ -31,8 +31,8 @@ JetSubstructurePlotsExample::JetSubstructurePlotsExample(edm::ParameterSet const
   // Compare jet clustering algorithms
   theDir_->make<TH1F>("hAK5JetPt",   "AK5 Jet Pt",   50, 0., 2000.);
   theDir_->make<TH1F>("hCA8JetPt",   "CA8 Jet Pt",   50, 0., 2000.);
-  theDir_->make<TH1F>("hAK5JetMass", "AK5 Jet Mass", 50, 0., 400.);
-  theDir_->make<TH1F>("hCA8JetMass", "CA8 Jet Mass", 50, 0., 400.);
+  theDir_->make<TH1F>("hAK5JetMass", "AK5 Jet Mass", 50, 0., 300.);
+  theDir_->make<TH1F>("hCA8JetMass", "CA8 Jet Mass", 50, 0., 300.);
   theDir_->make<TH1F>("hAK5JetArea", "AK5 Jet Area", 50, 0., 4.);
   theDir_->make<TH1F>("hCA8JetArea", "CA8 Jet Area", 50, 0., 4.);
   theDir_->make<TH1F>("hAK5JetNconstituents",   "AK5 Jet Nconstituents",   50, 0., 200.);
@@ -43,11 +43,11 @@ JetSubstructurePlotsExample::JetSubstructurePlotsExample(edm::ParameterSet const
 
   
   // Substuructure algorithms
-  theDir_->make<TH1F>("hTrimmedMass", "Trimmed Jet Mass", 50, 0., 400.);
+  theDir_->make<TH1F>("hTrimmedMass", "Trimmed Jet Mass", 50, 0., 300.);
   theDir_->make<TH1F>("hTrimmedArea", "Trimmed Jet Area", 50, 0., 2);
-  theDir_->make<TH1F>("hPrunedMass", "Pruned Jet Mass", 50, 0., 400.);
+  theDir_->make<TH1F>("hPrunedMass", "Pruned Jet Mass", 50, 0., 300.);
   theDir_->make<TH1F>("hPrunedArea", "Pruned Jet Area", 50, 0., 2.);
-  theDir_->make<TH1F>("hFilteredMass", "Filtered Jet Mass", 50, 0., 400.);
+  theDir_->make<TH1F>("hFilteredMass", "Filtered Jet Mass", 50, 0., 300.);
   theDir_->make<TH1F>("hFilteredArea", "Filtered Jet Area", 50, 0., 2);
   theDir_->make<TH1F>("hQjetVolatility", "Qjets volatiliity", 50, 0., 1);
   theDir_->make<TH1F>("hTau4", "Tau4", 50, 0., 1);
@@ -57,15 +57,18 @@ JetSubstructurePlotsExample::JetSubstructurePlotsExample(edm::ParameterSet const
   theDir_->make<TH1F>("hTau43", "Nsubjettiness Tau4/Tau3", 50, 0., 1.);
   theDir_->make<TH1F>("hTau32", "Nsubjettiness Tau3/Tau2", 50, 0., 1.);
   theDir_->make<TH1F>("hTau21", "Nsubjettiness Tau2/Tau1", 50, 0., 1.);
+  theDir_->make<TH1F>("hJetCharge", "Jet Charge", 100, -0.2, 0.2);
 
 
   theDir_->make<TH1F>("h_cutTopMass_QjetVolatility", "Qjets volatiliity - top mass window", 50, 0., 1);
   theDir_->make<TH1F>("h_cutTopMass_Tau32", "Nsubjettiness Tau3/Tau2 - top mass window", 50, 0., 1.);
   theDir_->make<TH1F>("h_cutTopMass_Tau21", "Nsubjettiness Tau2/Tau1 - top mass window", 50, 0., 1.);
+  theDir_->make<TH1F>("h_cutTopMass_JetCharge", "Jet Charge - top mass window", 100, -0.2, 0.2);
 
   theDir_->make<TH1F>("h_cutWMass_QjetVolatility", "Qjets volatiliity - W mass window", 50, 0., 1);
   theDir_->make<TH1F>("h_cutWMass_Tau32", "Nsubjettiness Tau3/Tau2 - W mass window", 50, 0., 1.);
   theDir_->make<TH1F>("h_cutWMass_Tau21", "Nsubjettiness Tau2/Tau1 - W mass window", 50, 0., 1.);
+  theDir_->make<TH1F>("h_cutWMass_JetCharge", "JetCharge - W mass window", 100, -0.2, 0.2);
 
 
   theDir_->make<TH1F>("hPt_denom",   "Jet pT",   50, 0., 2000.);
@@ -78,7 +81,7 @@ JetSubstructurePlotsExample::JetSubstructurePlotsExample(edm::ParameterSet const
   theDir_->make<TH1F>("h_prunedJet_Pt",       "Jet pt", 50, 0., 2000.);
   theDir_->make<TH1F>("h_prunedJet_Rapidity", "Jet Rapidity", 50, -5.0, 5.0);
   theDir_->make<TH1F>("h_prunedJet_Phi",      "Jet Azimuthal Angle", 50, -TMath::Pi(), TMath::Pi());
-  theDir_->make<TH1F>("h_prunedJet_Mass",     "Jet Mass", 50, 0., 400.);
+  theDir_->make<TH1F>("h_prunedJet_Mass",     "Jet Mass", 50, 0., 300.);
   theDir_->make<TH1F>("h_prunedJet_Area",     "Jet Area", 50, 0., 5.0);
   theDir_->make<TH1F>("h_prunedJet_Subjet0Pt",            "Subjet pt, highest mass subjet", 50, 0., 1000.);
   theDir_->make<TH1F>("h_prunedJet_Subjet0Mass",          "Subjet mass, highest mass subjet", 50, 0., 500.);
@@ -109,13 +112,13 @@ JetSubstructurePlotsExample::JetSubstructurePlotsExample(edm::ParameterSet const
   theDir_->make<TH1F>("h_prunedJet_cutWMass_SubjetAsymmetry",      "Subjet Asymmetry - W mass window", 50, 0., 1.0);   
   
   // CMSTopTagger
-  theDir_->make<TH1F>("hCATopMass",     "CATop Jet mass",     50,   0., 400.);
+  theDir_->make<TH1F>("hCATopMass",     "CATop Jet mass",     50,   0., 300.);
   theDir_->make<TH1F>("hCATopMinMass",  "CATop Jet minmass",  50,   0., 150.);
   theDir_->make<TH1F>("hCATopNsubjets", "CATop Jet Nsubjets", 5,    0., 5.);
   theDir_->make<TH1F>("hCATopPt",       "CATop Jet Pt",       50,   0., 2000.);
   theDir_->make<TH1F>("hCATopRapidity", "CATop Jet Rapdity",  50, -5.0, 5.0);
   
-  theDir_->make<TH1F>("h_cutTopMass_CATopMass",     "CATop Jet mass - top mass window",     50,   0., 400.);
+  theDir_->make<TH1F>("h_cutTopMass_CATopMass",     "CATop Jet mass - top mass window",     50,   0., 300.);
   theDir_->make<TH1F>("h_cutTopMass_CATopMinMass",  "CATop Jet minmass - top mass window",  50,   0., 150.);
   theDir_->make<TH1F>("h_cutTopMass_CATopNsubjets", "CATop Jet Nsubjets - top mass window", 5,    0., 5.);
   theDir_->make<TH1F>("h_cutTopMass_CATopPt",       "CATop Jet Pt - top mass window",       50,   0., 2000.);
@@ -343,8 +346,11 @@ void JetSubstructurePlotsExample::analyze(edm::Event const& evt, edm::EventSetup
       if (tau2!=0) tau32 = tau3/tau2;
       if (tau3!=0) tau43 = tau4/tau3;
 
- 
-      // Fill histograms   		
+      // Jet Charge
+      float kappa = 0.3;
+      float jet_charge = tmp->getJetCharge( kappa );
+     
+      // Fill histograms   	
       theDir_->getObject<TH1>("hTrimmedMass")  ->Fill( trimmed_jet_mass  , weight );
       theDir_->getObject<TH1>("hTrimmedArea")  ->Fill( trimmed_jet_area  , weight );
       theDir_->getObject<TH1>("hPrunedMass")   ->Fill( pruned_jet_mass   , weight );
@@ -359,6 +365,7 @@ void JetSubstructurePlotsExample::analyze(edm::Event const& evt, edm::EventSetup
       theDir_->getObject<TH1>("hTau43")    ->Fill( tau32             , weight );
       theDir_->getObject<TH1>("hTau32")    ->Fill( tau32             , weight );
       theDir_->getObject<TH1>("hTau21")    ->Fill( tau21             , weight );
+      theDir_->getObject<TH1>("hJetCharge")    ->Fill( jet_charge             , weight );
 
 
       theDir_->getObject<TH2>("h2PrunedMassPt")    ->Fill( ijet->pt(), pruned_jet_mass,   weight );
@@ -378,12 +385,13 @@ void JetSubstructurePlotsExample::analyze(edm::Event const& evt, edm::EventSetup
 
 
       // plot these variables for jets with mass in the W mass window
-      if ( ijet->mass()>60 && ijet->mass()<100 ) 
+      if ( ijet->mass()>65 && ijet->mass()<105 ) 
       {
 
         theDir_->getObject<TH1>("h_cutWMass_QjetVolatility") ->Fill( qjet_volatility   , weight );
         theDir_->getObject<TH1>("h_cutWMass_Tau32")          ->Fill( tau32             , weight );
         theDir_->getObject<TH1>("h_cutWMass_Tau21")          ->Fill( tau21             , weight );
+        theDir_->getObject<TH1>("h_cutWMass_JetCharge")    ->Fill( jet_charge             , weight );
 
       }
 
@@ -394,6 +402,7 @@ void JetSubstructurePlotsExample::analyze(edm::Event const& evt, edm::EventSetup
         theDir_->getObject<TH1>("h_cutTopMass_QjetVolatility") ->Fill( qjet_volatility   , weight );
         theDir_->getObject<TH1>("h_cutTopMass_Tau32")          ->Fill( tau32             , weight );
         theDir_->getObject<TH1>("h_cutTopMass_Tau21")          ->Fill( tau21             , weight );
+        theDir_->getObject<TH1>("h_cutTopMass_JetCharge")    ->Fill( jet_charge             , weight );
 
       }
 
@@ -506,7 +515,7 @@ void JetSubstructurePlotsExample::analyze(edm::Event const& evt, edm::EventSetup
         theDir_->getObject<TH1>("h_prunedJet_SubjetAsymmetry")->Fill( subjetAsymmetry, weight );
 
         // plot these variables for jets with mass in the W mass window
-        if ( ijet->mass()>60 && ijet->mass()<100 )
+        if ( ijet->mass()>65 && ijet->mass()<105 )
         {
 
           theDir_->getObject<TH1>("h_prunedJet_cutWMass_Subjet0Pt")->Fill( subjet0_p4.Perp(), weight );
