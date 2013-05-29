@@ -328,6 +328,7 @@ void JetSubstructurePlotsExample::analyze(edm::Event const& evt, edm::EventSetup
 
       std::vector< fastjet::PseudoJet > pruned_subjets = tmp->getPrunedSubjets( 2, zcut, rcut ); //int nToKeep, float zcut, float rcut
 
+
       double my_massDrop =-1;
       if (pruned_subjets.size() >1 )
       {
@@ -341,7 +342,7 @@ void JetSubstructurePlotsExample::analyze(edm::Event const& evt, edm::EventSetup
           pruned_subjets[1] = temp;
         }
 
-        // Compute substructure tagging variables
+        // DID SOMETHING WRONG - DONT USE
         float massDrop = pruned_subjets[0].m()/pruned_jet_mass;
         my_massDrop = massDrop;
 
@@ -356,13 +357,14 @@ void JetSubstructurePlotsExample::analyze(edm::Event const& evt, edm::EventSetup
       // Qjet (arXiv:1201.1914)
       int event = evt.id().event();
       float qjet_volatility  = -1;
+      float qjet_volatility2  = -1;
       if (runQjets_) qjet_volatility  = tmp->getQjetVolatility( event, 50, 25 );  // event number (used for random seed), Ntrees, Number of particles to precluster
 
       // Nsubjettiness (arXiv:1011.2268)
       float tau1 = tmp->getTau( 1, 1.0 );  //1subjettiness
       float tau2 = tmp->getTau( 2, 1.0 );  //2subjettiness
       float tau3 = tmp->getTau( 3, 1.0 );  //3subjettiness
-      float tau4 = tmp->getTau( 4, 1.0 );  //3subjettiness
+      float tau4 = tmp->getTau( 4, 1.0 );  //4subjettiness
       float tau21 = -1;
       float tau32 = -1;
       float tau43 = -1;
@@ -412,7 +414,7 @@ void JetSubstructurePlotsExample::analyze(edm::Event const& evt, edm::EventSetup
       theDir_->getObject<TH1>("hTau3")         ->Fill( tau3              , weight );
       theDir_->getObject<TH1>("hTau2")         ->Fill( tau2              , weight );
       theDir_->getObject<TH1>("hTau1")         ->Fill( tau1              , weight );
-      theDir_->getObject<TH1>("hTau43")    ->Fill( tau32             , weight );
+      theDir_->getObject<TH1>("hTau43")    ->Fill( tau43             , weight );
       theDir_->getObject<TH1>("hTau32")    ->Fill( tau32             , weight );
       theDir_->getObject<TH1>("hTau21")    ->Fill( tau21             , weight );
       theDir_->getObject<TH1>("hJetCharge")    ->Fill( jet_charge             , weight );

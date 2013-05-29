@@ -31,22 +31,22 @@ isRStoWW = False
 if isZprimeMC:
   PlotSuffix = "_ZprimeMC"
   inputFile = 'file:/uscms_data/d1/jdolen/HATS/ZPrimeToTTJets_M2000GeV_W20GeV_tlbsm_53x_v3_mc_1_1_ZzP.root'
-  nEvents = 2000
+  nEvents = 200
 
 if isQCDMC:
   PlotSuffix = "_QCDMC"  
   inputFile ='file:/uscms_data/d1/jdolen/HATS/QCD_Pt-15to3000_TuneZ2star_Flat_8TeV_pythia6_00F65A31.root'
-  nEvents = 10000
+  nEvents = 1000
 
 if isTTbarMC:
   PlotSuffix = "_TTbarMC"  
   inputFile = 'file:/uscms_data/d1/jdolen/HATS/TT_Mtt_1000toInf_tlbsm_53x_v3_mc_96_1_abQ.root'
-  nEvents =2000
+  nEvents =200
 
 if isRStoWW:
   PlotSuffix = "_RStoWW"
   inputFile = 'file:/uscms_data/d1/jdolen/HATS/RStoWW1.root','file:/uscms_data/d1/jdolen/HATS/RStoWW2.root','file:/uscms_data/d1/jdolen/HATS/RStoWW3.root','file:/uscms_data/d1/jdolen/HATS/RStoWW4.root','file:/uscms_data/d1/jdolen/HATS/RStoWW5.root','file:/uscms_data/d1/jdolen/HATS/RStoWW6.root','file:/uscms_data/d1/jdolen/HATS/RStoWW7.root','file:/uscms_data/d1/jdolen/HATS/RStoWW8.root','file:/uscms_data/d1/jdolen/HATS/RStoWW9.root','file:/uscms_data/d1/jdolen/HATS/RStoWW10.root','file:/uscms_data/d1/jdolen/HATS/RStoWW11.root','file:/uscms_data/d1/jdolen/HATS/RStoWW12.root',
-  nEvents = 2000
+  nEvents = 200
 
 
 ##  _            _           _           

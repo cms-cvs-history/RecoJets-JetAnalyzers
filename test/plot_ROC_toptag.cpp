@@ -17,47 +17,39 @@ void run()
   TH1F * DENOM_SIG  = (TH1F*)SIG->Get("pf/hCount"); 
 
 
-  TH1F * NUMER_QJET_BKD  = (TH1F*)BKD->Get("pf/h_cutTopMass_QjetVolatility");
-  TH1F * NUMER_QJET_SIG  = (TH1F*)SIG->Get("pf/h_cutTopMass_QjetVolatility");
-  TGraph * ROC1 = plotROC_IntegrateDown(NUMER_QJET_BKD, DENOM_BKD, NUMER_QJET_SIG, DENOM_SIG);
-
+  // Make MinMass ROC
   TH1F * NUMER_CMS_BKD  = (TH1F*)BKD->Get("pf/h_cutTopMass_CATopMinMass");
   TH1F * NUMER_CMS_SIG  = (TH1F*)SIG->Get("pf/h_cutTopMass_CATopMinMass");
   TH1F * DENOM_CMS_BKD  = (TH1F*)BKD->Get("pf/hCATopRapidity");
   TH1F * DENOM_CMS_SIG  = (TH1F*)SIG->Get("pf/hCATopRapidity");
   TGraph * ROC2 = plotROC_IntegratUp(NUMER_CMS_BKD, DENOM_CMS_BKD, NUMER_CMS_SIG, DENOM_CMS_SIG);
 
+  // Make Tau32 ROC
   TH1F * NUMER_TAU32_BKD  = (TH1F*)BKD->Get("pf/h_cutTopMass_Tau32");
   TH1F * NUMER_TAU32_SIG  = (TH1F*)SIG->Get("pf/h_cutTopMass_Tau32");
   TGraph * ROC3 = plotROC_IntegrateDown(NUMER_TAU32_BKD, DENOM_BKD, NUMER_TAU32_SIG, DENOM_SIG);
 
   // compare the top-tagging ROC plots
-  ROC1->SetTitle("Mistag rate vs Efficiency - Top tagging;Tagging Efficiency; Mistag Rate");
   ROC2->SetTitle("Mistag rate vs Efficiency - Top tagging;Tagging Efficiency; Mistag Rate");
   ROC3->SetTitle("Mistag rate vs Efficiency - Top tagging;Tagging Efficiency; Mistag Rate");
 
-  ROC1->SetLineColor(1);
   ROC2->SetLineColor(2);
   ROC3->SetLineColor(4);
 
-  ROC1->SetMarkerStyle(20);
   ROC2->SetMarkerStyle(20);
   ROC3->SetMarkerStyle(20);
 
-  ROC1->SetLineWidth(2);
   ROC2->SetLineWidth(2);
   ROC3->SetLineWidth(2);
 
   TCanvas *c1= new TCanvas("c1","",200,10,800,800);
 
-  ROC1->Draw("alp");
-  ROC2->Draw("l");
+  ROC2->Draw("al");
   ROC3->Draw("l");
 
   leg = new TLegend(0.15,0.67,0.4,0.85);
   leg->SetBorderSize(0);
   leg->SetFillColor(0);
-  leg->AddEntry(ROC1,"Qjets","L");
   leg->AddEntry(ROC2,"MinMass","L");
   leg->AddEntry(ROC3,"Tau32","L");
   leg->Draw("same");
