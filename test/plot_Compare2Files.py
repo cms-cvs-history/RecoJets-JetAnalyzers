@@ -66,11 +66,13 @@ hists = [
     ##### EXERCISE 1a
     'hAK5JetMass',
     'hCA8JetMass',
+	'hAK5JetNconstituents',
+	'hCA8JetNconstituents',
     ##################################
     #### EXERCISE 1c
-    'hTrimmedMass',
-    'hPrunedMass',
-    'hFilteredMass',
+    #'hTrimmedMass',
+    #'hPrunedMass',
+    #'hFilteredMass',
     ##################################
     #### EXERCISE 2ab
     # 'hQjetVolatility',
