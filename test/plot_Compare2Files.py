@@ -66,13 +66,13 @@ hists = [
     ##### EXERCISE 1a
     'hAK5JetMass',
     'hCA8JetMass',
-    # ##################################
-    # #### EXERCISE 1c
-    # 'hTrimmedMass',
-    # 'hPrunedMass',
-    # 'hFilteredMass',
-    # ##################################
-    # #### EXERCISE 2ab
+    ##################################
+    #### EXERCISE 1c
+    'hTrimmedMass',
+    'hPrunedMass',
+    'hFilteredMass',
+    ##################################
+    #### EXERCISE 2ab
     # 'hQjetVolatility',
     # 'hTau3',
     # 'hTau2',
@@ -83,10 +83,19 @@ hists = [
     # 'hCATopMass',
     # 'hCATopMinMass',
     # 'hCATopNsubjets',
+    # 'h_cutWMass_QjetVolatility',
+    # 'h_cutWMass_Tau32',
+    # 'h_cutWMass_Tau21',
+    # 'h_cutTopMass_QjetVolatility',
+    # 'h_cutTopMass_Tau32',
+    # 'h_cutTopMass_Tau21',
+    # 'h_cutTopMass_CATopMinMass',
+    # 'h_cutTopMass_CATopNsubjets',
     # 'h_prunedJet_MassDrop',
-    # 'h_prunedJet_SubjetAsymmetry',
+    # 'h_prunedJet_cutWMass_MassDrop',
     # ##################################
     # #### addtional plots if we have time in session 2
+    # 'h_prunedJet_SubjetAsymmetry',
     # 'h_prunedJet_Subjet0Pt',
     # 'h_prunedJet_Subjet0Mass',
     # 'h_prunedJet_Subjet0Area',
@@ -98,8 +107,19 @@ hists = [
     # 'h_prunedJet_Subjet1DeltaRCore',
     # 'h_prunedJet_Subjet1PtRelCore',
     # 'h_prunedJet_DeltaRSubjet0Subjet1',
-    # 'h_prunedJet_cutMass_MassDrop',
-    # 'h_prunedJet_cutMass_SubjetAsymmetry'
+    # 'h_prunedJet_cutWMass_SubjetAsymmetry',
+    # 'h_prunedJet_cutWMass_Subjet0Pt',
+    # 'h_prunedJet_cutWMass_Subjet0Mass',
+    # 'h_prunedJet_cutWMass_Subjet0Area',
+    # 'h_prunedJet_cutWMass_Subjet0DeltaRCore',
+    # 'h_prunedJet_cutWMass_Subjet0PtRelCore',
+    # 'h_prunedJet_cutWMass_Subjet1Pt',
+    # 'h_prunedJet_cutWMass_Subjet1Mass',
+    # 'h_prunedJet_cutWMass_Subjet1Area',
+    # 'h_prunedJet_cutWMass_Subjet1DeltaRCore',
+    # 'h_prunedJet_cutWMass_Subjet1PtRelCore',
+    # 'h_prunedJet_cutWMass_DeltaRSubjet0Subjet1',
+    # 'h_cutWMass_JetCharge'
     ]
 
 

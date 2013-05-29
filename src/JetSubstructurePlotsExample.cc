@@ -43,6 +43,7 @@ JetSubstructurePlotsExample::JetSubstructurePlotsExample(edm::ParameterSet const
 
   
   // Substuructure algorithms
+  theDir_->make<TH1F>("hCount", "count jets", 1, 0., 5);
   theDir_->make<TH1F>("hTrimmedMass", "Trimmed Jet Mass", 50, 0., 300.);
   theDir_->make<TH1F>("hTrimmedArea", "Trimmed Jet Area", 50, 0., 2);
   theDir_->make<TH1F>("hPrunedMass", "Pruned Jet Mass", 50, 0., 300.);
@@ -58,24 +59,26 @@ JetSubstructurePlotsExample::JetSubstructurePlotsExample(edm::ParameterSet const
   theDir_->make<TH1F>("hTau32", "Nsubjettiness Tau3/Tau2", 50, 0., 1.);
   theDir_->make<TH1F>("hTau21", "Nsubjettiness Tau2/Tau1", 50, 0., 1.);
   theDir_->make<TH1F>("hJetCharge", "Jet Charge", 100, -0.2, 0.2);
-
+  theDir_->make<TH1F>("h_jetChargeWplus", "Jet Charge for W+", 50, -0.5, 0.5);
+  theDir_->make<TH1F>("h_jetChargeWminus", "Jet Charge for W-", 50, -0.5, 0.5);
+  theDir_->make<TH1F>("hMassDrop", "Pruned mass drop",  50, 0., 1.0);
 
   theDir_->make<TH1F>("h_cutTopMass_QjetVolatility", "Qjets volatiliity - top mass window", 50, 0., 1);
   theDir_->make<TH1F>("h_cutTopMass_Tau32", "Nsubjettiness Tau3/Tau2 - top mass window", 50, 0., 1.);
   theDir_->make<TH1F>("h_cutTopMass_Tau21", "Nsubjettiness Tau2/Tau1 - top mass window", 50, 0., 1.);
   theDir_->make<TH1F>("h_cutTopMass_JetCharge", "Jet Charge - top mass window", 100, -0.2, 0.2);
 
+
+  theDir_->make<TH1F>("h_cutWMass_MassDrop", "Pruned mass drop",  50, 0., 1.0);
   theDir_->make<TH1F>("h_cutWMass_QjetVolatility", "Qjets volatiliity - W mass window", 50, 0., 1);
   theDir_->make<TH1F>("h_cutWMass_Tau32", "Nsubjettiness Tau3/Tau2 - W mass window", 50, 0., 1.);
   theDir_->make<TH1F>("h_cutWMass_Tau21", "Nsubjettiness Tau2/Tau1 - W mass window", 50, 0., 1.);
   theDir_->make<TH1F>("h_cutWMass_JetCharge", "JetCharge - W mass window", 100, -0.2, 0.2);
 
-
   theDir_->make<TH1F>("hPt_denom",   "Jet pT",   50, 0., 2000.);
   theDir_->make<TH1F>("hPt_QjetTag",   "Jet pT - Qjet Volatility <0.2",   50, 0., 2000.);
   theDir_->make<TH1F>("hPt_Tau21Tag",   "Jet pT - tau21<0.4",   50, 0., 2000.);
   theDir_->make<TH1F>("hPt_PrunedMassTag",   "Jet pT - pruned mass in W mass window",   50, 0., 2000.);
-
 
   // Substructure variables from pruned jets
   theDir_->make<TH1F>("h_prunedJet_Pt",       "Jet pt", 50, 0., 2000.);
@@ -322,6 +325,27 @@ void JetSubstructurePlotsExample::analyze(edm::Event const& evt, edm::EventSetup
       float pruned_jet_mass  = tmp->getPrunedJet( zcut, rcut ).m();
       float pruned_jet_area  = tmp->getPrunedJet( zcut, rcut ).area();
 
+
+      std::vector< fastjet::PseudoJet > pruned_subjets = tmp->getPrunedSubjets( 2, zcut, rcut ); //int nToKeep, float zcut, float rcut
+
+      double my_massDrop =-1;
+      if (pruned_subjets.size() >1 )
+      {
+
+
+        // Order the subjets by mass, not pt!
+        if ( pruned_subjets[1].m() > pruned_subjets[0].m()) 
+        {
+          fastjet::PseudoJet temp = pruned_subjets[0];
+          pruned_subjets[0] = pruned_subjets[1];
+          pruned_subjets[1] = temp;
+        }
+
+        // Compute substructure tagging variables
+        float massDrop = pruned_subjets[0].m()/pruned_jet_mass;
+        my_massDrop = massDrop;
+
+      }
       // filtered jet ( arXiv:0802.2470)
       float rfilt = 0.3;
       int nfilt = 3;
@@ -349,8 +373,34 @@ void JetSubstructurePlotsExample::analyze(edm::Event const& evt, edm::EventSetup
       // Jet Charge
       float kappa = 0.3;
       float jet_charge = tmp->getJetCharge( kappa );
+
+      // loop through the gen particles...
+      edm::Handle<reco::GenParticleCollection> genParticles;
+      evt.getByLabel("prunedGenParticles", genParticles);
+
+      size_t nGen = genParticles->size();
+
+      // now iterate over the daughters
+      const reco::Candidate *V=NULL;
+
+      //std::cout << "-----------" << std::endl;
+      for(size_t i = 0; i < nGen; ++ i) {
+              V = &((*genParticles)[i]);
+              if( !(abs(V->status())==3) ) continue;
+
+              if ((fabs(V->pdgId()) == 24) && (V->mother()->pdgId() == 5000039)){
+                      // check if it matches the jet
+                      TLorentzVector tmp_Genp4( V->px(), V->py(), V->pz(), V->energy() );
+                      TLorentzVector tmp_Jetp4( ijet->px(), ijet->py(), ijet->pz(), ijet->energy() );
+                      if ((tmp_Jetp4.DeltaR( tmp_Genp4 ) < 0.3) && (V->pdgId() > 0)) theDir_->getObject<TH1>("h_jetChargeWplus")->Fill( tmp->getJetCharge(1.0), weight );
+                      if ((tmp_Jetp4.DeltaR( tmp_Genp4 ) < 0.3) && (V->pdgId() < 0)) theDir_->getObject<TH1>("h_jetChargeWminus")->Fill( tmp->getJetCharge(1.0), weight );
+              }
+      }
+
+
      
       // Fill histograms   	
+      theDir_->getObject<TH1>("hCount")  ->Fill( 1  , weight );
       theDir_->getObject<TH1>("hTrimmedMass")  ->Fill( trimmed_jet_mass  , weight );
       theDir_->getObject<TH1>("hTrimmedArea")  ->Fill( trimmed_jet_area  , weight );
       theDir_->getObject<TH1>("hPrunedMass")   ->Fill( pruned_jet_mass   , weight );
@@ -366,6 +416,7 @@ void JetSubstructurePlotsExample::analyze(edm::Event const& evt, edm::EventSetup
       theDir_->getObject<TH1>("hTau32")    ->Fill( tau32             , weight );
       theDir_->getObject<TH1>("hTau21")    ->Fill( tau21             , weight );
       theDir_->getObject<TH1>("hJetCharge")    ->Fill( jet_charge             , weight );
+      theDir_->getObject<TH1>("hMassDrop")    ->Fill( my_massDrop             , weight );
 
 
       theDir_->getObject<TH2>("h2PrunedMassPt")    ->Fill( ijet->pt(), pruned_jet_mass,   weight );
@@ -385,13 +436,14 @@ void JetSubstructurePlotsExample::analyze(edm::Event const& evt, edm::EventSetup
 
 
       // plot these variables for jets with mass in the W mass window
-      if ( ijet->mass()>65 && ijet->mass()<105 ) 
+      if (  pruned_jet_mass > 60 && pruned_jet_mass <100  ) 
       {
 
         theDir_->getObject<TH1>("h_cutWMass_QjetVolatility") ->Fill( qjet_volatility   , weight );
         theDir_->getObject<TH1>("h_cutWMass_Tau32")          ->Fill( tau32             , weight );
         theDir_->getObject<TH1>("h_cutWMass_Tau21")          ->Fill( tau21             , weight );
         theDir_->getObject<TH1>("h_cutWMass_JetCharge")    ->Fill( jet_charge             , weight );
+        theDir_->getObject<TH1>("h_cutWMass_MassDrop")    ->Fill( my_massDrop             , weight );
 
       }
 
@@ -515,7 +567,7 @@ void JetSubstructurePlotsExample::analyze(edm::Event const& evt, edm::EventSetup
         theDir_->getObject<TH1>("h_prunedJet_SubjetAsymmetry")->Fill( subjetAsymmetry, weight );
 
         // plot these variables for jets with mass in the W mass window
-        if ( ijet->mass()>65 && ijet->mass()<105 )
+        if ( ijet->mass()>60 && ijet->mass()<100 )
         {
 
           theDir_->getObject<TH1>("h_prunedJet_cutWMass_Subjet0Pt")->Fill( subjet0_p4.Perp(), weight );
@@ -559,7 +611,7 @@ void JetSubstructurePlotsExample::analyze(edm::Event const& evt, edm::EventSetup
     float minmass  = catopTag->properties().minMass;
     int nsubjets    = ijet->numberOfDaughters();
     
-    if (pt>350){
+    if (pt>300){
 
       if (jet_number<2){
 

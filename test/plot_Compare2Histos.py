@@ -128,7 +128,7 @@ plot( "hAK5JetRapidity","hCA8JetRapidity","Jet Rapidity- Compare Algorithms;Jetr
 # plot("hTrimmedArea","hPrunedArea","Compare trimmed and pruned area;Jet Area;Number of jets","Trimmed","Pruned","plots/Plot_Area_CompareTrimmedPruned.png")
 
 ############################################
-## EXERCISE 1D
+## EXERCISE 1
 # use script plot_mass_vs_nvtx.cpp
 
 
